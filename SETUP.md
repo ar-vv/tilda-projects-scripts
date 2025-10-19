@@ -27,8 +27,8 @@ GitHub Pages может потребовать несколько минут д�
 
 ## 🔗 После настройки ссылки будут работать:
 
-- **CSS**: https://ar-vv.github.io/tilda-projects-scripts/style.css
-- **JS**: https://ar-vv.github.io/tilda-projects-scripts/script.js
+- **CSS**: https://ar-vv.github.io/tilda-projects-scripts/without/style.css
+- **JS**: https://ar-vv.github.io/tilda-projects-scripts/without/script.js
 - **Главная страница**: https://ar-vv.github.io/tilda-projects-scripts/
 - **Ссылки для копирования**: https://ar-vv.github.io/tilda-projects-scripts/links.html
 
