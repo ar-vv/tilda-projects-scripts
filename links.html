@@ -131,14 +131,14 @@
             
             <div class="url-item">
                 <span class="url-label">CSS:</span>
-                <span class="url-link" id="without-css">https://ar-vv.github.io/tilda-projects-scripts/without/style.css</span>
-                <button class="copy-btn" onclick="copyToClipboard('without-css')">Копировать</button>
+                <span class="url-link" id="main-css">https://ar-vv.github.io/tilda-projects-scripts/style.css</span>
+                <button class="copy-btn" onclick="copyToClipboard('main-css')">Копировать</button>
             </div>
             
             <div class="url-item">
                 <span class="url-label">JS:</span>
-                <span class="url-link" id="without-js">https://ar-vv.github.io/tilda-projects-scripts/without/script.js</span>
-                <button class="copy-btn" onclick="copyToClipboard('without-js')">Копировать</button>
+                <span class="url-link" id="main-js">https://ar-vv.github.io/tilda-projects-scripts/script.js</span>
+                <button class="copy-btn" onclick="copyToClipboard('main-js')">Копировать</button>
             </div>
         </div>
 
@@ -147,10 +147,10 @@
         <div class="code-block">
             <button class="copy-all" onclick="copyAllCode()">Копировать весь код</button>
 &lt;!-- CSS стили для Without Project --&gt;
-&lt;link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/without/style.css"&gt;
+&lt;link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/style.css"&gt;
 
 &lt;!-- JavaScript скрипты для Without Project --&gt;
-&lt;script src="https://ar-vv.github.io/tilda-projects-scripts/without/script.js"&gt;&lt;/script&gt;
+&lt;script src="https://ar-vv.github.io/tilda-projects-scripts/script.js"&gt;&lt;/script&gt;
         </div>
 
         <h2>🎯 Доступные эффекты</h2>
@@ -233,10 +233,10 @@
 
         function copyAllCode() {
             const code = `<!-- CSS стили для Without Project -->
-<link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/without/style.css">
+<link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/style.css">
 
 <!-- JavaScript скрипты для Without Project -->
-<script src="https://ar-vv.github.io/tilda-projects-scripts/without/script.js"></script>`;
+<script src="https://ar-vv.github.io/tilda-projects-scripts/script.js"></script>`;
             
             navigator.clipboard.writeText(code).then(function() {
                 showSuccessMessage();
