@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Публичные ссылки - Tilda Projects Scripts</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .link-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #FC037F;
+        }
+        .copy-btn {
+            background: #FC037F;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: #d0036a;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            position: relative;
+        }
+        .code-block .copy-all {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .code-block .copy-all:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #FC037F;
+            margin-top: 30px;
+        }
+        .project-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .url-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e1e5e9;
+        }
+        .url-label {
+            font-weight: bold;
+            min-width: 60px;
+            color: #333;
+        }
+        .url-link {
+            flex: 1;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            color: #007bff;
+            word-break: break-all;
+            margin: 0 10px;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Публичные ссылки для Tilda Projects Scripts</h1>
+        
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Готовые ссылки для копирования и использования на ваших сайтах
+        </p>
+
+        <div class="link-section">
+            <div class="project-name">🎨 Without Project</div>
+            <div class="description">Анимации и визуальные эффекты: размытие, стеклянный эффект, слайдер, анимированные кнопки</div>
+            
+            <div class="url-item">
+                <span class="url-label">CSS:</span>
+                <span class="url-link" id="without-css">https://ar-vv.github.io/tilda-projects-scripts/without/style.css</span>
+                <button class="copy-btn" onclick="copyToClipboard('without-css')">Копировать</button>
+            </div>
+            
+            <div class="url-item">
+                <span class="url-label">JS:</span>
+                <span class="url-link" id="without-js">https://ar-vv.github.io/tilda-projects-scripts/without/script.js</span>
+                <button class="copy-btn" onclick="copyToClipboard('without-js')">Копировать</button>
+            </div>
+        </div>
+
+        <h2>📋 Готовый код для Tilda</h2>
+        
+        <div class="code-block">
+            <button class="copy-all" onclick="copyAllCode()">Копировать весь код</button>
+&lt;!-- CSS стили для Without Project --&gt;
+&lt;link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/without/style.css"&gt;
+
+&lt;!-- JavaScript скрипты для Without Project --&gt;
+&lt;script src="https://ar-vv.github.io/tilda-projects-scripts/without/script.js"&gt;&lt;/script&gt;
+        </div>
+
+        <h2>🎯 Доступные эффекты</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.myblur</strong><br>
+                <small>Анимация размытия и движения элементов</small>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.glass</strong><br>
+                <small>Стеклянный эффект с бликами и текстурой</small>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.slider + .bar</strong><br>
+                <small>Горизонтальный слайдер с точками навигации</small>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.mybutton</strong><br>
+                <small>Анимированные кнопки с эффектом приподнятия</small>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.textglow</strong><br>
+                <small>Светящийся белый текст</small>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.mylink</strong><br>
+                <small>Ссылки с эффектом обводки при наведении</small>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <strong>.shadow</strong><br>
+                <small>Тени для элементов</small>
+            </div>
+        </div>
+
+        <h2>📝 Инструкция для Tilda</h2>
+        
+        <ol>
+            <li><strong>Откройте настройки сайта</strong> в Tilda</li>
+            <li><strong>Перейдите в раздел</strong> "Настройки сайта" → "HTML код для вставки в &lt;head&gt;"</li>
+            <li><strong>Добавьте ссылку на CSS:</strong><br>
+                <code>&lt;link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/without/style.css"&gt;</code>
+            </li>
+            <li><strong>Перейдите в раздел</strong> "HTML код для вставки перед &lt;/body&gt;"</li>
+            <li><strong>Добавьте ссылку на JS:</strong><br>
+                <code>&lt;script src="https://ar-vv.github.io/tilda-projects-scripts/without/script.js"&gt;&lt;/script&gt;</code>
+            </li>
+            <li><strong>Сохраните изменения</strong></li>
+            <li><strong>Добавьте нужные классы</strong> к элементам на вашем сайте</li>
+        </ol>
+
+        <div class="success-message" id="successMessage">
+            ✅ Ссылка скопирована в буфер обмена!
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #e3f2fd; border-radius: 8px;">
+            <strong>⚡ Автоматическое обновление</strong><br>
+            <small>Скрипты автоматически обновляются при каждом изменении в репозитории. Ваш сайт всегда будет использовать последнюю версию!</small>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                showSuccessMessage();
+            }).catch(function(err) {
+                // Fallback для старых браузеров
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showSuccessMessage();
+            });
+        }
+
+        function copyAllCode() {
+            const code = `<!-- CSS стили для Without Project -->
+<link rel="stylesheet" href="https://ar-vv.github.io/tilda-projects-scripts/without/style.css">
+
+<!-- JavaScript скрипты для Without Project -->
+<script src="https://ar-vv.github.io/tilda-projects-scripts/without/script.js"></script>`;
+            
+            navigator.clipboard.writeText(code).then(function() {
+                showSuccessMessage();
+            }).catch(function(err) {
+                // Fallback для старых браузеров
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showSuccessMessage();
+            });
+        }
+
+        function showSuccessMessage() {
+            const message = document.getElementById('successMessage');
+            message.style.display = 'block';
+            setTimeout(function() {
+                message.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
