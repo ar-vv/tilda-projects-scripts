@@ -180,15 +180,17 @@ document.addEventListener("DOMContentLoaded", () => {
     initSliderWidth();
   }
 
-  // Установка ширины слайдера равной ширине блока .slider-width
+  // Простая установка ширины слайдера равной ширине блока .slider-width
   function initSliderWidth() {
-    const sliderWidthBlocks = document.querySelectorAll('.slider-width');
-    const sliders = document.querySelectorAll('.slider');
-    
     function updateSliderWidths() {
+      const sliderWidthBlocks = document.querySelectorAll('.slider-width');
+      const sliders = document.querySelectorAll('.slider');
+      
       sliderWidthBlocks.forEach(block => {
-        const width = block.getBoundingClientRect().width;
-        block.style.setProperty('--slider-width', width + 'px');
+        const width = block.offsetWidth;
+        sliders.forEach(slider => {
+          slider.style.width = width + 'px';
+        });
       });
     }
     
@@ -197,12 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Обновляем при изменении размера окна
     window.addEventListener('resize', updateSliderWidths);
-    
-    // Наблюдаем за изменениями размера блоков
-    if (window.ResizeObserver) {
-      const resizeObserver = new ResizeObserver(updateSliderWidths);
-      sliderWidthBlocks.forEach(block => resizeObserver.observe(block));
-    }
   }
 
   // Запуск при загрузке страницы
