@@ -184,12 +184,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function initSliderWidth() {
     function updateSliderWidths() {
       const sliderWidthBlocks = document.querySelectorAll('.slider-width');
-      const sliders = document.querySelectorAll('.slider');
       
       sliderWidthBlocks.forEach(block => {
         const width = block.offsetWidth;
-        sliders.forEach(slider => {
-          slider.style.width = width + 'px';
+        const molecules = document.querySelectorAll('.slider .tn-molecule');
+        molecules.forEach(molecule => {
+          molecule.style.width = width + 'px';
         });
       });
     }
