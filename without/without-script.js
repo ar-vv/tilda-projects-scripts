@@ -184,21 +184,31 @@ document.addEventListener("DOMContentLoaded", () => {
   function initSliderWidth() {
     function updateSliderWidths() {
       const sliderWidthBlocks = document.querySelectorAll('.slider-width');
+      console.log('Найдено блоков .slider-width:', sliderWidthBlocks.length);
       
-      sliderWidthBlocks.forEach(block => {
+      sliderWidthBlocks.forEach((block, index) => {
         const width = block.offsetWidth;
+        console.log(`Блок .slider-width #${index + 1} ширина:`, width + 'px');
+        
         const molecules = document.querySelectorAll('.slider .tn-molecule');
-        molecules.forEach(molecule => {
+        console.log('Найдено блоков .slider .tn-molecule:', molecules.length);
+        
+        molecules.forEach((molecule, molIndex) => {
           molecule.style.width = width + 'px';
+          console.log(`Блок .slider .tn-molecule #${molIndex + 1} получил ширину:`, width + 'px');
         });
       });
     }
     
     // Обновляем при загрузке
+    console.log('Инициализация initSliderWidth...');
     updateSliderWidths();
     
     // Обновляем при изменении размера окна
-    window.addEventListener('resize', updateSliderWidths);
+    window.addEventListener('resize', () => {
+      console.log('Изменение размера окна, обновляем ширины...');
+      updateSliderWidths();
+    });
   }
 
   // Запуск при загрузке страницы
