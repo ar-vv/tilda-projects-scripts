@@ -186,3 +186,45 @@ document.addEventListener("DOMContentLoaded", () => {
     run();
   }
 })();
+
+// ===========================================
+// ОБРАБОТЧИК КНОПКИ-ССЫЛКИ "#Submit"
+// ===========================================
+// Позволяет использовать ссылку <a href="#Submit"> для отправки формы
+// с приоритетной обработкой до внутренних скриптов (capture=true)
+(function () {
+  document.addEventListener(
+    'click',
+    function (ev) {
+      const link = ev.target.closest && ev.target.closest('a[href="#Submit"]');
+      if (!link) return;
+
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+
+      const form = document.querySelector('form.t-form') || document.querySelector('form');
+      if (!form) {
+        console.warn('Форма не найдена');
+        return;
+      }
+
+      // HTML5-валидация (браузер покажет подсказки, если не заполнено)
+      if (form.reportValidity && !form.reportValidity()) {
+        return;
+      }
+
+      // Сабмит с фолбэком
+      if (form.requestSubmit) {
+        form.requestSubmit();
+      } else {
+        const btn = form.querySelector('button[type="submit"], .t-submit, input[type="submit"]');
+        if (btn) {
+          btn.click();
+        } else {
+          form.submit();
+        }
+      }
+    },
+    true // capture=true — ловим клик раньше внутренних скриптов
+  );
+})();
