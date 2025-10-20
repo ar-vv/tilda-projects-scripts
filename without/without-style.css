@@ -148,12 +148,17 @@
 
 /* Основные стили слайдера */
 .slider {
-  width: 100% !important;
+  width: var(--slider-width, 100%) !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
   scroll-behavior: smooth !important;
+}
+
+/* Установка ширины слайдера равной ширине блока .slider-width */
+.slider-width {
+  --slider-width: 100%;
 }
 
 /* Скрытие скроллбара в WebKit браузерах */

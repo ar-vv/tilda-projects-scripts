@@ -177,6 +177,32 @@ document.addEventListener("DOMContentLoaded", () => {
   function run() {
     initDots();
     initArrows();
+    initSliderWidth();
+  }
+
+  // Установка ширины слайдера равной ширине блока .slider-width
+  function initSliderWidth() {
+    const sliderWidthBlocks = document.querySelectorAll('.slider-width');
+    const sliders = document.querySelectorAll('.slider');
+    
+    function updateSliderWidths() {
+      sliderWidthBlocks.forEach(block => {
+        const width = block.getBoundingClientRect().width;
+        block.style.setProperty('--slider-width', width + 'px');
+      });
+    }
+    
+    // Обновляем при загрузке
+    updateSliderWidths();
+    
+    // Обновляем при изменении размера окна
+    window.addEventListener('resize', updateSliderWidths);
+    
+    // Наблюдаем за изменениями размера блоков
+    if (window.ResizeObserver) {
+      const resizeObserver = new ResizeObserver(updateSliderWidths);
+      sliderWidthBlocks.forEach(block => resizeObserver.observe(block));
+    }
   }
 
   // Запуск при загрузке страницы
