@@ -309,11 +309,7 @@ window.addEventListener('load',function(){setTimeout(init,300)});
 // Применяется к элементам с классом .uc-ticker
 // Создает бесшовную анимацию прокрутки изображений
 (function () {
-  // Определяем Safari для оптимизации
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  
-  // Настройки скорости для разных браузеров
-  const SPEED = isSafari ? 80 : 100;         // px/сек (медленнее для Safari)
+  const SPEED = 100;         // px/сек
   const MAX_WAIT_MS = 4000;
 
   const onReady = (fn)=>
@@ -510,12 +506,7 @@ window.addEventListener('load',function(){setTimeout(init,300)});
     }
 
     function apply(){
-      // Для Safari используем более простой transform без 3D
-      if (isSafari) {
-        track.style.transform = 'translateX('+(-Math.round(offset))+'px)';
-      } else {
-        track.style.transform = 'translate3d('+(-Math.round(offset))+'px,0,0)';
-      }
+      track.style.transform = 'translate3d('+(-Math.round(offset))+'px,0,0)';
     }
 
     function tick(ts){
@@ -532,13 +523,7 @@ window.addEventListener('load',function(){setTimeout(init,300)});
       }
 
       apply();
-      
-      // Для Safari используем более стабильный интервал
-      if (isSafari) {
-        rafId = setTimeout(() => requestAnimationFrame(tick), 16); // ~60fps
-      } else {
-        rafId = requestAnimationFrame(tick);
-      }
+      rafId = requestAnimationFrame(tick);
     }
 
     function start(){ stop(); lastTs = 0; rafId = requestAnimationFrame(tick); }
