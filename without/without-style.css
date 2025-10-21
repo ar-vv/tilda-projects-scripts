@@ -142,6 +142,34 @@
 }
 
 /* ===========================================
+   АНИМАЦИЯ ТИКЕРА (CSS)
+   =========================================== */
+/* Плавная CSS анимация для тикера - работает везде, включая Safari */
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.uc-ticker-track {
+  display: flex !important;
+  animation: ticker-scroll linear infinite !important;
+  will-change: transform !important;
+}
+
+/* Для Safari добавляем аппаратное ускорение */
+@supports (-webkit-appearance: none) {
+  .uc-ticker-track {
+    -webkit-animation: ticker-scroll linear infinite !important;
+    -webkit-transform: translateZ(0) !important;
+  }
+}
+
+/* ===========================================
    ФОРМЫ: скрываем дефолтную кнопку сабмита
    =========================================== */
 /* При использовании <a href="#Submit"> скрываем стандартные submit-кнопки */

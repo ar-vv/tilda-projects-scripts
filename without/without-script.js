@@ -308,8 +308,8 @@ window.addEventListener('load',function(){setTimeout(init,300)});
 // ===========================================
 // Применяется к элементам с классом .uc-ticker
 // Создает бесшовную анимацию прокрутки изображений
+// Использует CSS анимацию для плавности на всех браузерах, включая Safari
 (function () {
-  const SPEED = 100;         // px/сек
   const MAX_WAIT_MS = 4000;
 
   const onReady = (fn)=>
@@ -333,8 +333,8 @@ window.addEventListener('load',function(){setTimeout(init,300)});
     const {visual, inner} = prepareLayers(ticker);
     await collectReverseAndSize(wrapper, inner, H, t0);
     const track = buildSingleTrack(inner);              // единый трек
-    fillTrackToWidth(track, ticker);                    // домножаем до 2.5× ширины окна
-    runConveyor(track, ticker);                         // бесшовная анимация
+    duplicateContent(track);                            // дублируем для бесшовного цикла
+    setupAnimation(track, ticker);                      // запускаем CSS анимацию
   }
 
   /* ---------- ожидания/слои ---------- */
@@ -468,89 +468,37 @@ window.addEventListener('load',function(){setTimeout(init,300)});
     track.style.gap = '40px';
     track.style.flexWrap = 'nowrap';
     track.style.justifyContent = 'flex-start';
-    track.style.willChange = 'transform';
     track.querySelectorAll('img').forEach(im=> im.style.setProperty('flex','0 0 auto','important'));
   }
 
-  // дублируем до ≥ 2.5× ширины окна, клоны тоже «замораживаем»
-  function fillTrackToWidth(track, ticker){
-    const containerW = ticker.clientWidth || parseFloat(getComputedStyle(ticker).width) || 0;
-    if(!containerW) return;
-    const targetW = containerW * 2.5;
-    const MAX_REPS = 20;
-    let reps = 0;
-    while (track.scrollWidth < targetW && reps < MAX_REPS){
-      const clones = Array.from(track.children).map(n=>{
-        const c = n.cloneNode(true);
-        if (c.tagName === 'IMG') freezeImage(c);
-        return c;
-      });
-      clones.forEach(n=> track.appendChild(n));
-      reps++;
-    }
+  // Дублируем контент для бесшовной анимации
+  function duplicateContent(track){
+    const original = Array.from(track.children);
+    // Дублируем все элементы для бесшовного цикла
+    original.forEach(node => {
+      const clone = node.cloneNode(true);
+      if (clone.tagName === 'IMG') freezeImage(clone);
+      track.appendChild(clone);
+    });
   }
 
-  function runConveyor(track, ticker){
-    let offset = 0;
-    let rafId = null, lastTs = 0;
-
-    function getGapPx(){
-      const cs = getComputedStyle(track);
-      return parseFloat(cs.columnGap || cs.gap || '0') || 0;
-    }
-
-    function firstItemFullWidth(){
-      const first = track.firstElementChild;
-      if(!first) return 0;
-      return first.getBoundingClientRect().width + getGapPx();
-    }
-
-    function apply(){
-      track.style.transform = 'translate3d('+(-Math.round(offset))+'px,0,0)';
-    }
-
-    function tick(ts){
-      if(!lastTs) lastTs = ts;
-      const dt = (ts - lastTs)/1000; lastTs = ts;
-
-      offset += SPEED * dt;
-
-      // как только первый элемент полностью вышел — кидаем в конец и вычитаем его ширину
-      let w;
-      while ((w = firstItemFullWidth()) && offset >= w - 0.5) {
-        track.appendChild(track.firstElementChild);
-        offset -= w;
-      }
-
-      apply();
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function start(){ stop(); lastTs = 0; rafId = requestAnimationFrame(tick); }
-    function stop(){ if(rafId){ cancelAnimationFrame(rafId); rafId = null; } }
-
-    const remeasure = ()=>{
-      stop();
-      fillTrackToWidth(track, ticker);
-      start();
-    };
-
+  function setupAnimation(track, ticker){
+    // Вычисляем длительность анимации на основе ширины контента
+    const trackWidth = track.scrollWidth / 2; // делим на 2, т.к. контент дублирован
+    const speed = 100; // px/сек
+    const duration = trackWidth / speed;
+    
+    track.style.animationDuration = duration + 's';
+    
+    // Обновляем при ресайзе
     if (window.ResizeObserver){
-      const ro = new ResizeObserver(remeasure);
-      ro.observe(ticker); ro.observe(track);
-    } else {
-      window.addEventListener('resize', remeasure, {passive:true});
+      const ro = new ResizeObserver(() => {
+        const newWidth = track.scrollWidth / 2;
+        const newDuration = newWidth / speed;
+        track.style.animationDuration = newDuration + 's';
+      });
+      ro.observe(ticker);
+      ro.observe(track);
     }
-
-    // если какие-то изображения ещё дорисуются — «заморозим» и продолжим
-    track.querySelectorAll('img').forEach(im=>{
-      if(!im.complete){
-        const done = ()=>{ freezeImage(im); remeasure(); };
-        im.addEventListener('load', done, {once:true});
-        im.addEventListener('error',done, {once:true});
-      }
-    });
-
-    start();
   }
 })();
