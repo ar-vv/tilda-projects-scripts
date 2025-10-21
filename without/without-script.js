@@ -319,3 +319,79 @@ document.addEventListener("DOMContentLoaded", () => {
     true // capture=true — ловим клик раньше внутренних скриптов
   );
 })();
+
+// ===========================================
+// ОПТИМИЗИРОВАННЫЙ СТЕКЛЯННЫЙ ЭФФЕКТ
+// ===========================================
+// Применяется к элементам с классами .my-glass и .slide
+// Создает оптимизированный стеклянный эффект с рефракцией
+(function(){
+'use strict';
+var cfg={blur:8,saturate:180,contrast:110,grayThickness:5,grayIntensity:.5};
+function init(){
+var els=document.querySelectorAll('.my-glass,.slide');
+if(!els.length)return;
+var isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+els.forEach(function(el){
+if(el.dataset.glassInit)return;
+el.dataset.glassInit='1';
+var atom=el.querySelector('.tn-atom');
+var bg='',op=1,br='24px',bc='';
+if(atom){
+var s=getComputedStyle(atom);
+bg=s.backgroundColor;
+op=parseFloat(s.opacity)||1;
+br=s.borderRadius||'24px';
+bc=s.borderColor;
+}
+el.style.borderRadius=br;
+el.style.webkitBorderRadius=br;
+if(bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent'){
+var m=bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+if(m){
+var r=m[1],g=m[2],b=m[3];
+el.style.background='linear-gradient(135deg,rgba('+r+','+g+','+b+','+op+'),rgba('+r+','+g+','+b+','+(op*.5)+'))';
+}else{
+el.style.background=bg;
+}
+}
+var layer=document.createElement('div');
+layer.className='glass-layer';
+layer.style.borderRadius=br;
+layer.style.webkitBorderRadius=br;
+var border=document.createElement('div');
+border.className='glass-border';
+border.style.borderRadius=br;
+border.style.webkitBorderRadius=br;
+border.style.border='1px solid '+(bc&&bc!=='rgba(0, 0, 0, 0)'&&bc!=='transparent'?bc:'rgba(255,255,255,.8)');
+var shadow=document.createElement('div');
+shadow.className='glass-shadow';
+shadow.style.borderRadius=br;
+shadow.style.webkitBorderRadius=br;
+var t=cfg.grayThickness,i=cfg.grayIntensity;
+if(isSafari){
+shadow.style.boxShadow='inset 0 '+t*.4+'px '+t*1.5+'px rgba(128,128,128,'+(i*.6)+')';
+}else{
+shadow.style.boxShadow='inset 0 '+t*.4+'px '+t*2+'px rgba(128,128,128,'+(i*.8)+'),inset '+t*.4+'px 0 '+t*2+'px rgba(128,128,128,'+(i*.6)+')';
+}
+shadow.style.webkitBoxShadow=shadow.style.boxShadow;
+el.insertBefore(shadow,el.firstChild);
+el.insertBefore(border,el.firstChild);
+el.insertBefore(layer,el.firstChild);
+if(atom){
+atom.style.backgroundColor='transparent';
+atom.style.background='transparent';
+atom.style.opacity='0';
+}
+});
+}
+if(document.readyState==='loading'){
+document.addEventListener('DOMContentLoaded',function(){setTimeout(init,100)});
+}else{
+setTimeout(init,100);
+}
+if(window.t_onReady){
+window.t_onReady(function(){setTimeout(init,200)});
+}
+window.addEventListener('load',function(){setTimeout(init,300)});
+})();
