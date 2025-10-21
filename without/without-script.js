@@ -134,6 +134,13 @@ document.addEventListener("DOMContentLoaded", () => {
         dot.className = 'bar-dot';
         host.appendChild(dot);
       }
+      
+      // Добавляем отслеживание скрола для этого слайдера
+      const slider = getSliderFor(bar);
+      if (slider) {
+        updateDotsForSlider(slider, bar);
+        slider.addEventListener('scroll', () => updateDotsForSlider(slider, bar));
+      }
     });
   }
 
@@ -154,6 +161,27 @@ document.addEventListener("DOMContentLoaded", () => {
     return wSlide + wSpace;
   }
 
+  // Обновление состояния точек в зависимости от позиции скрола
+  function updateDotsForSlider(slider, bar) {
+    const dots = bar.querySelectorAll('.bar-dot');
+    if (!dots.length) return;
+    
+    const step = getStep(slider);
+    const scrollLeft = slider.scrollLeft;
+    
+    // Вычисляем количество пройденных шагов
+    const currentStep = Math.round(scrollLeft / step);
+    
+    // Обновляем состояние каждой точки
+    dots.forEach((dot, index) => {
+      if (index <= currentStep) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  }
+
   // Инициализация стрелок навигации
   function initArrows() {
     document.addEventListener('click', function (e) {
@@ -170,6 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
         slider.scrollLeft += step;
       } else {
         slider.scrollLeft -= step;
+      }
+      
+      // Обновляем точки после прокрутки
+      const bar = document.querySelector('.bar');
+      if (bar) {
+        updateDotsForSlider(slider, bar);
       }
     }, { passive: false });
   }

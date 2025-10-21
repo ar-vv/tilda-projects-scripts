@@ -180,8 +180,15 @@
   width: 10px !important;
   height: 10px !important;
   border-radius: 50% !important;
-  background: #FC037F !important;
+  background: transparent !important;
+  border: 2px solid #FC037F !important;
   flex: 0 0 10px !important;
+  transition: background 0.3s ease !important;
+}
+
+/* Активные точки (залитые) */
+.bar .bar-dot.active {
+  background: #FC037F !important;
 }
 
 /* ===========================================
