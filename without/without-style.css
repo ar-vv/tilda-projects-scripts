@@ -142,6 +142,27 @@
 }
 
 /* ===========================================
+   ОПТИМИЗАЦИЯ ТИКЕРА ДЛЯ SAFARI
+   =========================================== */
+/* Улучшаем производительность анимации тикера на Safari */
+
+.uc-ticker-track {
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+}
+
+/* Для Safari отключаем аппаратное ускорение если оно вызывает проблемы */
+@supports (-webkit-appearance: none) {
+  .uc-ticker-track {
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+  }
+}
+
+/* ===========================================
    ФОРМЫ: скрываем дефолтную кнопку сабмита
    =========================================== */
 /* При использовании <a href="#Submit"> скрываем стандартные submit-кнопки */
