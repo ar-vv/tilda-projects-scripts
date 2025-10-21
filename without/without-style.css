@@ -76,6 +76,7 @@
 
 .link-under a:hover {
   text-decoration: underline !important;
+  color: #FC037F !important;
 }
 
 /* ===========================================
