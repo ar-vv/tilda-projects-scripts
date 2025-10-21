@@ -9,10 +9,14 @@
 // ===========================================
 // Применяется к элементам с классом .myblur
 // Создает эффект случайного размытия и движения элементов
-document.addEventListener("DOMContentLoaded", () => {
-  const elements = document.querySelectorAll(".myblur");
-
-  elements.forEach(el => {
+(function() {
+  function init() {
+    const elements = document.querySelectorAll(".myblur");
+    
+    elements.forEach(el => {
+      // Защита от повторной инициализации
+      if (el.dataset.blurInit) return;
+      el.dataset.blurInit = '1';
     // Базовые параметры размытия
     const baseBlur = 110; 
     const blurAmp = 15 + Math.random() * 15; // случайная амплитуда 15–30px
@@ -54,65 +58,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     requestAnimationFrame(animate);
-  });
-});
-
-// ===========================================
-// СКРИПТ ДЛЯ СТЕКЛЯННОГО ЭФФЕКТА
-// ===========================================
-// Применяется к элементам с классом .glass
-// Создает эффект стеклянной поверхности с бликами и текстурой
-(function() {
-  const ADD_NOISE = true; // включить/выключить текстуру шума
-
-  function enhance(atom) {
-    if (!atom) return;
-    atom.innerHTML = ''; // очищаем содержимое
-
-    // Создаем элемент блика
-    const glare = document.createElement('div');
-    glare.className = 'glx-glare';
-
-    // Создаем элемент полировки
-    const polish = document.createElement('div');
-    polish.className = 'glx-polish';
-
-    // Создаем элемент виньетки
-    const vignette = document.createElement('div');
-    vignette.className = 'glx-vignette';
-
-    // Добавляем элементы в атом
-    atom.appendChild(glare);
-    atom.appendChild(polish);
-    atom.appendChild(vignette);
-
-    // Добавляем текстуру шума если включена
-    if (ADD_NOISE) {
-      const noise = document.createElement('div');
-      noise.className = 'glx-noise';
-      atom.appendChild(noise);
-    }
-  }
-
-  function init() {
-    const atoms = document.querySelectorAll('.glass .tn-atom');
-    atoms.forEach(atom => {
-      enhance(atom);
-      // Наблюдаем за изменениями в элементе
-      const mo = new MutationObserver(() => {
-        if (!atom.querySelector('.glx-vignette')) enhance(atom);
-      });
-      mo.observe(atom, { childList: true });
     });
   }
-
+  
   // Инициализация при загрузке страницы
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
-  window.addEventListener('load', init);
 })();
 
 // ===========================================
@@ -120,6 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===========================================
 // Управляет слайдером с точками и стрелками навигации
 (function () {
+  let initialized = false;
+  
   // Инициализация точек навигации
   function initDots() {
     document.querySelectorAll('.bar').forEach(bar => {
@@ -183,59 +139,53 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Обработчик клика по точкам для скрола
-  function initDotClicks() {
+  // Объединенный обработчик кликов для слайдера (точки и стрелки)
+  function initSliderClicks() {
     document.addEventListener('click', function(e) {
+      // Обработка кликов по точкам навигации
       const dot = e.target.closest('.bar-dot');
-      if (!dot) return;
-      
-      e.preventDefault();
-      
-      const bar = dot.closest('.bar');
-      const slider = getSliderFor(bar);
-      if (!slider) return;
-      
-      const step = getStep(slider);
-      const dotIndex = parseInt(dot.getAttribute('data-index'));
-      
-      // Скролим к нужной позиции
-      slider.scrollLeft = dotIndex * step;
-      
-      // Обновляем состояние точек
-      updateDotsForSlider(slider, bar);
-    });
-  }
-
-  // Инициализация стрелок навигации
-  function initArrows() {
-    document.addEventListener('click', function (e) {
-      const a = e.target.closest && e.target.closest('a[href="#right"], a[href="#left"]');
-      if (!a) return;
-      e.preventDefault();
-
-      const slider = getSliderFor(a);
-      if (!slider) return;
-
-      const step = getStep(slider);
-      // Прокрутка вправо или влево
-      if (a.getAttribute('href') === '#right') {
-        slider.scrollLeft += step;
-      } else {
-        slider.scrollLeft -= step;
+      if (dot) {
+        e.preventDefault();
+        const bar = dot.closest('.bar');
+        const slider = getSliderFor(bar);
+        if (!slider) return;
+        
+        const step = getStep(slider);
+        const dotIndex = parseInt(dot.getAttribute('data-index'));
+        slider.scrollLeft = dotIndex * step;
+        updateDotsForSlider(slider, bar);
+        return;
       }
       
-      // Обновляем точки после прокрутки
-      const bar = document.querySelector('.bar');
-      if (bar) {
-        updateDotsForSlider(slider, bar);
+      // Обработка кликов по стрелкам навигации
+      const arrow = e.target.closest('a[href="#right"], a[href="#left"]');
+      if (arrow) {
+        e.preventDefault();
+        const slider = getSliderFor(arrow);
+        if (!slider) return;
+        
+        const step = getStep(slider);
+        if (arrow.getAttribute('href') === '#right') {
+          slider.scrollLeft += step;
+        } else {
+          slider.scrollLeft -= step;
+        }
+        
+        const bar = document.querySelector('.bar');
+        if (bar) {
+          updateDotsForSlider(slider, bar);
+        }
+        return;
       }
     }, { passive: false });
   }
 
   function run() {
+    if (initialized) return;
+    initialized = true;
+    
     initDots();
-    initArrows();
-    initDotClicks();
+    initSliderClicks();
     initSliderWidth();
   }
 
@@ -243,31 +193,24 @@ document.addEventListener("DOMContentLoaded", () => {
   function initSliderWidth() {
     function updateSliderWidths() {
       const sliderWidthBlocks = document.querySelectorAll('.slider-width');
-      console.log('Найдено блоков .slider-width:', sliderWidthBlocks.length);
+      if (!sliderWidthBlocks.length) return;
       
-      sliderWidthBlocks.forEach((block, index) => {
+      sliderWidthBlocks.forEach((block) => {
         const width = block.offsetWidth;
-        console.log(`Блок .slider-width #${index + 1} ширина:`, width + 'px');
+        if (!width) return;
         
         const molecules = document.querySelectorAll('.slider .tn-molecule');
-        console.log('Найдено блоков .slider .tn-molecule:', molecules.length);
-        
-        molecules.forEach((molecule, molIndex) => {
+        molecules.forEach((molecule) => {
           molecule.style.width = width + 'px';
-          console.log(`Блок .slider .tn-molecule #${molIndex + 1} получил ширину:`, width + 'px');
         });
       });
     }
     
     // Обновляем при загрузке
-    console.log('Инициализация initSliderWidth...');
     updateSliderWidths();
     
     // Обновляем при изменении размера окна
-    window.addEventListener('resize', () => {
-      console.log('Изменение размера окна, обновляем ширины...');
-      updateSliderWidths();
-    });
+    window.addEventListener('resize', updateSliderWidths, { passive: true });
   }
 
   // Запуск при загрузке страницы
@@ -284,9 +227,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // Позволяет использовать ссылку <a href="#Submit"> для отправки формы
 // с приоритетной обработкой до внутренних скриптов (capture=true)
 (function () {
-  document.addEventListener(
-    'click',
-    function (ev) {
+  let initialized = false;
+  
+  function init() {
+    if (initialized) return;
+    initialized = true;
+    
+    document.addEventListener(
+      'click',
+      function (ev) {
       const link = ev.target.closest && ev.target.closest('a[href="#Submit"]');
       if (!link) return;
 
@@ -314,10 +263,18 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           form.submit();
         }
-      }
-    },
-    true // capture=true — ловим клик раньше внутренних скриптов
-  );
+        }
+      },
+      true // capture=true — ловим клик раньше внутренних скриптов
+    );
+  }
+  
+  // Инициализация при загрузке страницы
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 
 // ===========================================
@@ -328,9 +285,24 @@ document.addEventListener("DOMContentLoaded", () => {
 (function(){
 'use strict';
 var cfg={blur:8,saturate:180,contrast:110,grayThickness:5,grayIntensity:.5};
+
+// Создаем SVG фильтр для рефракции
+function createSVGFilter(){
+  if(document.getElementById('glass-distortion'))return;
+  var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('style','position:absolute;width:0;height:0');
+  svg.setAttribute('aria-hidden','true');
+  svg.innerHTML='<defs><filter id="glass-distortion" x="-50%" y="-50%" width="200%" height="200%">'+
+    '<feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="2"/>'+
+    '<feDisplacementMap in="SourceGraphic" scale="20" xChannelSelector="R" yChannelSelector="G"/>'+
+    '</filter></defs>';
+  document.body.insertBefore(svg,document.body.firstChild);
+}
+
 function init(){
 var els=document.querySelectorAll('.my-glass,.slide');
 if(!els.length)return;
+createSVGFilter();
 var isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 els.forEach(function(el){
 if(el.dataset.glassInit)return;
@@ -394,4 +366,256 @@ if(window.t_onReady){
 window.t_onReady(function(){setTimeout(init,200)});
 }
 window.addEventListener('load',function(){setTimeout(init,300)});
+})();
+
+// ===========================================
+// СКРИПТ ДЛЯ ТИКЕРА (БЕСШОВНАЯ АНИМАЦИЯ)
+// ===========================================
+// Применяется к элементам с классом .uc-ticker
+// Создает бесшовную анимацию прокрутки изображений
+(function () {
+  const SPEED = 100;         // px/сек
+  const MAX_WAIT_MS = 4000;
+
+  const onReady = (fn)=>
+    /complete|interactive|loaded/.test(document.readyState)
+      ? fn()
+      : document.addEventListener('DOMContentLoaded', fn);
+
+  onReady(()=> {
+    document.querySelectorAll('.uc-ticker').forEach(initOnce);
+  });
+
+  function initOnce(wrapper){
+    if (wrapper.__ucTickerConveyorV2) return;
+    wrapper.__ucTickerConveyorV2 = true;
+    pipeline(wrapper).catch(err=>console.warn('[uc-ticker]', err));
+  }
+
+  async function pipeline(wrapper){
+    const t0 = Date.now();
+    const {ticker, H} = await waitTickerAndHeight(wrapper, t0);
+    const {visual, inner} = prepareLayers(ticker);
+    await collectReverseAndSize(wrapper, inner, H, t0);
+    const track = buildSingleTrack(inner);              // единый трек
+    fillTrackToWidth(track, ticker);                    // домножаем до 2.5× ширины окна
+    runConveyor(track, ticker);                         // бесшовная анимация
+  }
+
+  /* ---------- ожидания/слои ---------- */
+  function waitTickerAndHeight(wrapper, t0){
+    return new Promise((resolve, reject)=>{
+      (function probe(){
+        const ticker = wrapper.querySelector('.ticker');
+        if (ticker){
+          const inlineH = (ticker.style && ticker.style.height || '').trim();
+          const H = parseFloat(inlineH);
+          if (H) return resolve({ticker, H});
+        }
+        if (Date.now() - t0 > MAX_WAIT_MS) return reject('ticker/inline height not ready');
+        setTimeout(probe, 50);
+      })();
+    });
+  }
+
+  function prepareLayers(ticker){
+    const visual = ticker.querySelector('.tn-atom') || ticker.querySelector('div') || ticker;
+    visual.style.setProperty('position','relative','important');
+    visual.style.setProperty('width','100%','important');
+    visual.style.setProperty('height','100%','important');
+    visual.style.setProperty('overflow','hidden','important');
+    ticker.style.setProperty('overflow','hidden','important');
+
+    let inner = visual.querySelector('.uc-ticker-inner');
+    if(!inner){
+      inner = document.createElement('div');
+      inner.className = 'uc-ticker-inner';
+      visual.appendChild(inner);
+    }
+    inner.style.setProperty('position','absolute','important');
+    inner.style.setProperty('inset','0','important');
+    inner.style.setProperty('overflow','hidden','important');
+    return {visual, inner};
+  }
+
+  /* ---------- заморозка картинок (против повторной загрузки) ---------- */
+  function freezeImage(img){
+    // берём фактический урл, который сейчас отрисован (после всех подмен lazy-loader'а)
+    const finalURL = img.currentSrc || img.src;
+    if (finalURL) img.src = finalURL;
+
+    // убираем механизмы, которые могут снова менять src
+    img.removeAttribute('data-original');
+    img.classList.remove('t-img');      // тильдинский lazy
+    img.removeAttribute('srcset');
+    img.removeAttribute('sizes');
+    img.removeAttribute('loading');     // не ленивим клоны
+    img.setAttribute('decoding','async');
+  }
+
+  /* ---------- сбор, разворот, размеры ---------- */
+  function collectReverseAndSize(wrapper, inner, H, t0){
+    return new Promise((resolve, reject)=>{
+      (function step(){
+        const imgs = Array.from(wrapper.querySelectorAll('img'))
+          .filter(im => im.closest('.uc-ticker') === wrapper);
+        if (!imgs.length){
+          if (Date.now() - t0 > MAX_WAIT_MS) return reject('no images found');
+          return setTimeout(step, 50);
+        }
+
+        // переносим в inner
+        imgs.forEach(im => { if(!inner.contains(im)) inner.appendChild(im); });
+
+        // разворот порядка
+        Array.from(inner.querySelectorAll('img')).reverse().forEach(im => inner.appendChild(im));
+
+        // размеры + заморозка
+        const apply = ()=>{
+          inner.querySelectorAll('img').forEach(im=>{
+            im.style.setProperty('height', H + 'px', 'important');
+            im.style.setProperty('width',  'auto', 'important');
+            im.style.setProperty('max-width','none','important');
+            im.style.setProperty('display','block','important');
+            im.style.setProperty('object-fit','contain','important');
+            im.style.setProperty('flex','0 0 auto','important');
+            freezeImage(im);
+          });
+        };
+
+        apply();
+
+        // дождёмся, если что-то еще догружается, и тоже «заморозим»
+        let pending = 0;
+        inner.querySelectorAll('img').forEach(im=>{
+          if(!im.complete){
+            pending++;
+            const done = ()=>{ freezeImage(im); apply(); if(--pending<=0) resolve(); };
+            im.addEventListener('load', done, {once:true});
+            im.addEventListener('error',done, {once:true});
+          }
+        });
+        if(pending===0) resolve();
+      })();
+    });
+  }
+
+  /* ---------- один трек-конвейер ---------- */
+  function buildSingleTrack(inner){
+    let rail = inner.querySelector('.uc-ticker-rail');
+    if(!rail){
+      rail = document.createElement('div');
+      rail.className = 'uc-ticker-rail';
+      rail.style.position = 'absolute';
+      rail.style.inset = '0';
+      rail.style.overflow = 'hidden';
+      rail.style.willChange = 'transform';
+      rail.style.pointerEvents = 'none';
+      inner.appendChild(rail);
+    }
+    let track = rail.querySelector('.uc-ticker-track');
+    if(!track){
+      track = document.createElement('div');
+      track.className = 'uc-ticker-track';
+      rail.appendChild(track);
+    }
+
+    // переносим все IMG в track
+    track.textContent = '';
+    Array.from(inner.querySelectorAll('img')).forEach(im => track.appendChild(im));
+    styleTrack(track);
+    return track;
+  }
+
+  function styleTrack(track){
+    track.style.display = 'flex';
+    track.style.alignItems = 'center';
+    track.style.gap = '40px';
+    track.style.flexWrap = 'nowrap';
+    track.style.justifyContent = 'flex-start';
+    track.style.willChange = 'transform';
+    track.querySelectorAll('img').forEach(im=> im.style.setProperty('flex','0 0 auto','important'));
+  }
+
+  // дублируем до ≥ 2.5× ширины окна, клоны тоже «замораживаем»
+  function fillTrackToWidth(track, ticker){
+    const containerW = ticker.clientWidth || parseFloat(getComputedStyle(ticker).width) || 0;
+    if(!containerW) return;
+    const targetW = containerW * 2.5;
+    const MAX_REPS = 20;
+    let reps = 0;
+    while (track.scrollWidth < targetW && reps < MAX_REPS){
+      const clones = Array.from(track.children).map(n=>{
+        const c = n.cloneNode(true);
+        if (c.tagName === 'IMG') freezeImage(c);
+        return c;
+      });
+      clones.forEach(n=> track.appendChild(n));
+      reps++;
+    }
+  }
+
+  function runConveyor(track, ticker){
+    let offset = 0;
+    let rafId = null, lastTs = 0;
+
+    function getGapPx(){
+      const cs = getComputedStyle(track);
+      return parseFloat(cs.columnGap || cs.gap || '0') || 0;
+    }
+
+    function firstItemFullWidth(){
+      const first = track.firstElementChild;
+      if(!first) return 0;
+      return first.getBoundingClientRect().width + getGapPx();
+    }
+
+    function apply(){
+      track.style.transform = 'translate3d('+(-Math.round(offset))+'px,0,0)';
+    }
+
+    function tick(ts){
+      if(!lastTs) lastTs = ts;
+      const dt = (ts - lastTs)/1000; lastTs = ts;
+
+      offset += SPEED * dt;
+
+      // как только первый элемент полностью вышел — кидаем в конец и вычитаем его ширину
+      let w;
+      while ((w = firstItemFullWidth()) && offset >= w - 0.5) {
+        track.appendChild(track.firstElementChild);
+        offset -= w;
+      }
+
+      apply();
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function start(){ stop(); lastTs = 0; rafId = requestAnimationFrame(tick); }
+    function stop(){ if(rafId){ cancelAnimationFrame(rafId); rafId = null; } }
+
+    const remeasure = ()=>{
+      stop();
+      fillTrackToWidth(track, ticker);
+      start();
+    };
+
+    if (window.ResizeObserver){
+      const ro = new ResizeObserver(remeasure);
+      ro.observe(ticker); ro.observe(track);
+    } else {
+      window.addEventListener('resize', remeasure, {passive:true});
+    }
+
+    // если какие-то изображения ещё дорисуются — «заморозим» и продолжим
+    track.querySelectorAll('img').forEach(im=>{
+      if(!im.complete){
+        const done = ()=>{ freezeImage(im); remeasure(); };
+        im.addEventListener('load', done, {once:true});
+        im.addEventListener('error',done, {once:true});
+      }
+    });
+
+    start();
+  }
 })();

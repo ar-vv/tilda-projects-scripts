@@ -4,17 +4,11 @@
  * Этот файл содержит все CSS стили для различных эффектов и компонентов
  */
 
-/* SVG фильтр для рефракции (оптимизированный) */
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true">
-    <defs>
-        <filter id="glass-distortion" x="-50%" y="-50%" width="200%" height="200%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="2"/>
-            <feDisplacementMap in="SourceGraphic" scale="20" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-    </defs>
-</svg>
-
-/* Оптимизированные стили стеклянного эффекта */
+/* ===========================================
+   ОПТИМИЗИРОВАННЫЙ СТЕКЛЯННЫЙ ЭФФЕКТ (.my-glass, .slide)
+   =========================================== */
+/* Применяется к элементам с классами .my-glass и .slide */
+/* SVG фильтр создается динамически через JavaScript */
 .my-glass,.slide{overflow:hidden;isolation:isolate}
 .glass-layer{position:absolute;top:0;left:0;width:100%;height:100%;backdrop-filter:blur(8px) saturate(180%) contrast(110%);-webkit-backdrop-filter:blur(8px) saturate(180%) contrast(110%);background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.04));filter:url(#glass-distortion);-webkit-filter:url(#glass-distortion);pointer-events:none;z-index:1;will-change:contents}
 .glass-border{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;box-sizing:border-box;-webkit-box-sizing:border-box}
@@ -60,96 +54,7 @@
 }
 
 /* ===========================================
-   СТИЛИ ДЛЯ СТЕКЛЯННОГО ЭФФЕКТА
-   =========================================== */
-/* Применяется к элементам с классом .glass */
-/* Создает эффект стеклянной поверхности */
-
-/* Базовые стили для .tn-atom внутри .glass */
-.glass .tn-atom {
-  position: relative !important;
-  overflow: hidden !important;
-
-  /* Внешняя тень снизу для объема */
-  filter: drop-shadow(0 18px 36px rgba(0,0,0,0.18))
-          drop-shadow(0 4px 10px rgba(0,0,0,0.10)) !important;
-}
-
-/* Стили для блика */
-.glass .tn-atom .glx-glare {
-  position: absolute !important;
-  inset: -30% -30% 40% -30% !important;
-  background: radial-gradient(120% 80% at 15% 0%,
-    rgba(255,255,255,0.55) 0%,
-    rgba(255,255,255,0.22) 28%,
-    rgba(255,255,255,0.10) 45%,
-    rgba(255,255,255,0.00) 70%
-  ) !important;
-  transform: rotate(-8deg) !important;
-  pointer-events: none !important;
-  mix-blend-mode: screen !important;
-}
-
-/* Стили для полировки сверху */
-.glass .tn-atom .glx-polish {
-  position: absolute !important;
-  left: 8px !important; 
-  right: 8px !important; 
-  top: 8px !important; 
-  height: 1px !important;
-  background: linear-gradient(90deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.85) 35%,
-    rgba(255,255,255,0.50) 50%,
-    rgba(255,255,255,0) 100%
-  ) !important;
-  mix-blend-mode: screen !important;
-  pointer-events: none !important;
-}
-
-/* Стили для виньетки с тенью */
-.glass .tn-atom .glx-vignette {
-  position: absolute !important;
-  inset: 0 !important;
-  pointer-events: none !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.50),
-    inset 0 -1px 0 rgba(255,255,255,0.10),
-    inset 0 0 60px rgba(0,0,0,0.12),
-    inset 0 -26px 46px -8px rgba(0,0,0,0.28) !important;
-}
-
-/* Стили для текстуры шума */
-.glass .tn-atom .glx-noise {
-  position: absolute !important;
-  inset: 0 !important;
-  pointer-events: none !important;
-  opacity: .06 !important;
-  background-image: url("data:image/svg+xml;utf8,\
-  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>\
-  <filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter>\
-  <rect width='100%%' height='100%%' filter='url(#n)' opacity='0.5'/></svg>") !important;
-  background-size: 160px 160px !important;
-  mix-blend-mode: soft-light !important;
-}
-
-/* Адаптивные стили для мобильных устройств */
-@media (max-width: 768px) {
-  .glass .tn-atom {
-    filter: drop-shadow(0 12px 26px rgba(0,0,0,0.18))
-            drop-shadow(0 3px 8px rgba(0,0,0,0.10)) !important;
-  }
-  .glass .tn-atom .glx-vignette {
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.50),
-      inset 0 -1px 0 rgba(255,255,255,0.10),
-      inset 0 0 40px rgba(0,0,0,0.10),
-      inset 0 -20px 36px -8px rgba(0,0,0,0.26) !important;
-  }
-}
-
-/* ===========================================
-   СТИЛИ ДЛЯ СВЯЗЕЙ С ЭФФЕКТОМ ОБВОДКИ
+   СТИЛИ ДЛЯ ССЫЛОК С ЭФФЕКТОМ ЦВЕТА
    =========================================== */
 /* Применяется к элементам с классом .mylink */
 /* Создает эффект обводки текста при наведении */
