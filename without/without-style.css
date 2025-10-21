@@ -170,9 +170,10 @@
 /* Контейнер для точек */
 .bar .bar-dots {
   display: flex !important;
-  justify-content: space-between !important;
+  justify-content: center !important;
   align-items: center !important;
   width: 100% !important;
+  gap: 10px !important;
 }
 
 /* Стили отдельных точек */
@@ -180,8 +181,7 @@
   width: 10px !important;
   height: 10px !important;
   border-radius: 50% !important;
-  background: transparent !important;
-  border: 2px solid #FC037F !important;
+  background: #BFBFBF !important;
   flex: 0 0 10px !important;
   transition: background 0.3s ease !important;
   cursor: pointer !important;
