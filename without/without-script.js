@@ -9,55 +9,75 @@
 // ===========================================
 // Применяется к элементам с классом .myblur
 // Создает эффект случайного размытия и движения элементов
+// На Safari и мобильных устройствах анимация отключена (статичное размытие)
 (function() {
   function init() {
     const elements = document.querySelectorAll(".myblur");
     
+    // Определяем Safari
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    // Определяем мобильное устройство
+    const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                     || window.innerWidth <= 768;
+    
+    // Если Safari или мобильное устройство - используем статичное размытие
+    if (isSafari || isMobile) {
+      elements.forEach(el => {
+        if (el.dataset.blurInit) return;
+        el.dataset.blurInit = '1';
+        el.style.filter = 'blur(110px)';
+      });
+      return;
+    }
+    
+    // Анимированное размытие для остальных браузеров
     elements.forEach(el => {
       // Защита от повторной инициализации
       if (el.dataset.blurInit) return;
       el.dataset.blurInit = '1';
-    // Базовые параметры размытия
-    const baseBlur = 110; 
-    const blurAmp = 15 + Math.random() * 15; // случайная амплитуда 15–30px
-    const blurPeriod = (Math.random() * 6 + 4) * 1000; // период 4–10 секунд
-    
-    // Параметры движения
-    const moveRadius = 100; // радиус движения
-    const movePeriodX = (Math.random() * 8 + 6) * 1000; // период по X: 6–14 секунд
-    const movePeriodY = (Math.random() * 8 + 6) * 1000; // период по Y: 6–14 секунд
-    const phaseX = Math.random() * Math.PI * 2; // случайная фаза для X
-    const phaseY = Math.random() * Math.PI * 2; // случайная фаза для Y
+      
+      // Базовые параметры размытия
+      const baseBlur = 110; 
+      const blurAmp = 15 + Math.random() * 15; // случайная амплитуда 15–30px
+      const blurPeriod = (Math.random() * 6 + 4) * 1000; // период 4–10 секунд
+      
+      // Параметры движения
+      const moveRadius = 100; // радиус движения
+      const movePeriodX = (Math.random() * 8 + 6) * 1000; // период по X: 6–14 секунд
+      const movePeriodY = (Math.random() * 8 + 6) * 1000; // период по Y: 6–14 секунд
+      const phaseX = Math.random() * Math.PI * 2; // случайная фаза для X
+      const phaseY = Math.random() * Math.PI * 2; // случайная фаза для Y
 
-    let start = null;
+      let start = null;
 
-    function animate(timestamp) {
-      if (!start) start = timestamp;
-      const elapsed = timestamp - start;
+      function animate(timestamp) {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
 
-      // Вычисление размытия
-      const blurProgress = (elapsed % blurPeriod) / blurPeriod;
-      const blurAngle = blurProgress * 2 * Math.PI;
-      const blurValue = baseBlur + Math.sin(blurAngle) * blurAmp;
+        // Вычисление размытия
+        const blurProgress = (elapsed % blurPeriod) / blurPeriod;
+        const blurAngle = blurProgress * 2 * Math.PI;
+        const blurValue = baseBlur + Math.sin(blurAngle) * blurAmp;
 
-      // Вычисление движения по X
-      const moveProgressX = (elapsed % movePeriodX) / movePeriodX;
-      const angleX = moveProgressX * 2 * Math.PI + phaseX;
-      const offsetX = Math.cos(angleX) * moveRadius;
+        // Вычисление движения по X
+        const moveProgressX = (elapsed % movePeriodX) / movePeriodX;
+        const angleX = moveProgressX * 2 * Math.PI + phaseX;
+        const offsetX = Math.cos(angleX) * moveRadius;
 
-      // Вычисление движения по Y
-      const moveProgressY = (elapsed % movePeriodY) / movePeriodY;
-      const angleY = moveProgressY * 2 * Math.PI + phaseY;
-      const offsetY = Math.sin(angleY) * moveRadius;
+        // Вычисление движения по Y
+        const moveProgressY = (elapsed % movePeriodY) / movePeriodY;
+        const angleY = moveProgressY * 2 * Math.PI + phaseY;
+        const offsetY = Math.sin(angleY) * moveRadius;
 
-      // Применение трансформаций к элементу
-      el.style.filter = `blur(${blurValue}px)`;
-      el.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        // Применение трансформаций к элементу
+        el.style.filter = `blur(${blurValue}px)`;
+        el.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+
+        requestAnimationFrame(animate);
+      }
 
       requestAnimationFrame(animate);
-    }
-
-    requestAnimationFrame(animate);
     });
   }
   
