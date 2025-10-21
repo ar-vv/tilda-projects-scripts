@@ -184,6 +184,7 @@
   border: 2px solid #FC037F !important;
   flex: 0 0 10px !important;
   transition: background 0.3s ease !important;
+  cursor: pointer !important;
 }
 
 /* Активные точки (залитые) */

@@ -128,10 +128,11 @@ document.addEventListener("DOMContentLoaded", () => {
       host.classList.add('bar-dots');
       // Удаляем старые точки
       host.querySelectorAll(':scope > .bar-dot').forEach(n => n.remove());
-      // Создаем новые точки (7 штук)
-      for (let i = 0; i < 7; i++) {
+      // Создаем новые точки (5 штук)
+      for (let i = 0; i < 5; i++) {
         const dot = document.createElement('div');
         dot.className = 'bar-dot';
+        dot.setAttribute('data-index', i);
         host.appendChild(dot);
       }
       
@@ -169,8 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const step = getStep(slider);
     const scrollLeft = slider.scrollLeft;
     
-    // Вычисляем количество пройденных шагов
-    const currentStep = Math.round(scrollLeft / step);
+    // Вычисляем количество пройденных шагов (максимум 4 для 5 точек)
+    const currentStep = Math.min(Math.round(scrollLeft / step), 4);
     
     // Обновляем состояние каждой точки
     dots.forEach((dot, index) => {
@@ -179,6 +180,29 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         dot.classList.remove('active');
       }
+    });
+  }
+
+  // Обработчик клика по точкам для скрола
+  function initDotClicks() {
+    document.addEventListener('click', function(e) {
+      const dot = e.target.closest('.bar-dot');
+      if (!dot) return;
+      
+      e.preventDefault();
+      
+      const bar = dot.closest('.bar');
+      const slider = getSliderFor(bar);
+      if (!slider) return;
+      
+      const step = getStep(slider);
+      const dotIndex = parseInt(dot.getAttribute('data-index'));
+      
+      // Скролим к нужной позиции
+      slider.scrollLeft = dotIndex * step;
+      
+      // Обновляем состояние точек
+      updateDotsForSlider(slider, bar);
     });
   }
 
@@ -211,6 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function run() {
     initDots();
     initArrows();
+    initDotClicks();
     initSliderWidth();
   }
 
