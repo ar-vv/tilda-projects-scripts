@@ -483,22 +483,29 @@ window.addEventListener('load',function(){setTimeout(init,300)});
   }
 
   function setupAnimation(track, ticker){
-    // Вычисляем длительность анимации на основе ширины контента
-    const trackWidth = track.scrollWidth / 2; // делим на 2, т.к. контент дублирован
-    const speed = 100; // px/сек
-    const duration = trackWidth / speed;
-    
-    track.style.animationDuration = duration + 's';
-    
-    // Обновляем при ресайзе
-    if (window.ResizeObserver){
-      const ro = new ResizeObserver(() => {
-        const newWidth = track.scrollWidth / 2;
-        const newDuration = newWidth / speed;
-        track.style.animationDuration = newDuration + 's';
-      });
-      ro.observe(ticker);
-      ro.observe(track);
-    }
+    // Даем время браузеру на рендеринг, затем вычисляем длительность
+    setTimeout(() => {
+      const trackWidth = track.scrollWidth / 2; // делим на 2, т.к. контент дублирован
+      const speed = 100; // px/сек
+      const duration = trackWidth / speed;
+      
+      if (duration > 0) {
+        track.style.animationDuration = duration + 's';
+        track.style.animationPlayState = 'running';
+      }
+      
+      // Обновляем при ресайзе
+      if (window.ResizeObserver){
+        const ro = new ResizeObserver(() => {
+          const newWidth = track.scrollWidth / 2;
+          const newDuration = newWidth / speed;
+          if (newDuration > 0) {
+            track.style.animationDuration = newDuration + 's';
+          }
+        });
+        ro.observe(ticker);
+        ro.observe(track);
+      }
+    }, 100);
   }
 })();
