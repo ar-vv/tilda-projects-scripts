@@ -302,3 +302,31 @@ window.t_onReady(function(){setTimeout(init,200)});
 }
 window.addEventListener('load',function(){setTimeout(init,300)});
 })();
+
+// ===========================================
+// СИНХРОНИЗАЦИЯ ШИРИНЫ ТИКЕРА И СЛАЙДЕРА
+// ===========================================
+// Синхронизирует ширину .ticker с .ticker-width и .slider с .slider-width
+document.addEventListener("DOMContentLoaded", function() {
+  const tickerWidth = document.querySelector(".ticker-width");
+  const ticker = document.querySelector(".ticker");
+  const sliderWidth = document.querySelector(".slider-width");
+  const slider = document.querySelector(".slider");
+
+  function syncWidth(source, target) {
+    if (!source || !target) return;
+
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        target.style.width = entry.contentRect.width + "px";
+      }
+    });
+
+    observer.observe(source);
+    // выставляем изначально
+    target.style.width = source.offsetWidth + "px";
+  }
+
+  syncWidth(tickerWidth, ticker);
+  syncWidth(sliderWidth, slider);
+});
