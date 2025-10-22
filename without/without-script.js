@@ -44,13 +44,31 @@
     return s || null;
   }
 
-  // Вычисление шага прокрутки
+  // Вычисление шага прокрутки на основе .slider-start и .slider-end
   function getStep(slider) {
-    const slide = slider.querySelector('.slide');
-    const space = slider.querySelector('.space');
-    const wSlide = slide ? slide.getBoundingClientRect().width : 0;
-    const wSpace = space ? space.getBoundingClientRect().width : 0;
-    return wSlide + wSpace;
+    const start = slider.querySelector('.slider-start');
+    const end = slider.querySelector('.slider-end');
+    
+    if (!start || !end) {
+      // Фолбэк на старую логику если элементы не найдены
+      const slide = slider.querySelector('.slide');
+      const space = slider.querySelector('.space');
+      const wSlide = slide ? slide.getBoundingClientRect().width : 0;
+      const wSpace = space ? space.getBoundingClientRect().width : 0;
+      return wSlide + wSpace;
+    }
+    
+    // Вычисляем расстояние между start и end элементами
+    const startRect = start.getBoundingClientRect();
+    const endRect = end.getBoundingClientRect();
+    const sliderRect = slider.getBoundingClientRect();
+    
+    // Расстояние между левой точкой start и правой точкой end
+    const totalDistance = (endRect.right - sliderRect.left) - (startRect.left - sliderRect.left);
+    
+    // Делим на количество шагов (количество точек - 1)
+    const steps = 7; // для 8 точек нужно 7 шагов
+    return totalDistance / steps;
   }
 
   // Обновление состояния точек в зависимости от позиции скрола
