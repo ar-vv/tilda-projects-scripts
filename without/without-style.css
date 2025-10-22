@@ -97,7 +97,6 @@
 
 /* Основные стили слайдера */
 .slider {
-  width: 100% !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   -ms-overflow-style: none !important;
