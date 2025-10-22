@@ -5,13 +5,37 @@
  */
 
 /* ===========================================
-   СТИЛИ ДЛЯ РАЗМЫТИЯ
+   СТИЛИ ДЛЯ РАЗМЫТИЯ С АНИМАЦИЕЙ
    =========================================== */
 /* Применяется к элементам с классом .myblur */
-/* Создает статичное размытие элементов */
+/* Создает анимированное размытие с движением по кругу */
+
+@keyframes blur-circle-move {
+  0% {
+    filter: blur(80px);
+    transform: translate(50px, 0px);
+  }
+  25% {
+    filter: blur(150px);
+    transform: translate(0px, 50px);
+  }
+  50% {
+    filter: blur(80px);
+    transform: translate(-50px, 0px);
+  }
+  75% {
+    filter: blur(150px);
+    transform: translate(0px, -50px);
+  }
+  100% {
+    filter: blur(80px);
+    transform: translate(50px, 0px);
+  }
+}
 
 .myblur {
-  filter: blur(110px) !important;
+  animation: blur-circle-move 8s ease-in-out infinite !important;
+  will-change: transform, filter !important;
 }
 
 /* ===========================================
@@ -61,6 +85,7 @@
 /* Эффект приподнятия при наведении */
 .mybutton a:hover {
   transform: translateY(-3px) scale(1.02) !important;
+  background-color: #3026ef !important;
 }
 
 /* ===========================================
