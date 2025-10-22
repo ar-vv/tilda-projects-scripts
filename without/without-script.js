@@ -19,8 +19,8 @@
       host.classList.add('bar-dots');
       // Удаляем старые точки
       host.querySelectorAll(':scope > .bar-dot').forEach(n => n.remove());
-      // Создаем новые точки (5 штук)
-      for (let i = 0; i < 5; i++) {
+      // Создаем новые точки (8 штук)
+      for (let i = 0; i < 8; i++) {
         const dot = document.createElement('div');
         dot.className = 'bar-dot';
         dot.setAttribute('data-index', i);
@@ -61,8 +61,8 @@
     const step = getStep(slider);
     const scrollLeft = slider.scrollLeft;
     
-    // Вычисляем количество пройденных шагов (максимум 4 для 5 точек)
-    const currentStep = Math.min(Math.round(scrollLeft / step), 4);
+    // Вычисляем количество пройденных шагов (максимум 7 для 8 точек)
+    const currentStep = Math.min(Math.round(scrollLeft / step), 7);
     
     // Обновляем состояние каждой точки
     dots.forEach((dot, index) => {
