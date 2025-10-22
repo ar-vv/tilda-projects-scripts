@@ -76,15 +76,46 @@
     const dots = bar.querySelectorAll('.bar-dot');
     if (!dots.length) return;
     
-    const step = getStep(slider);
-    const scrollLeft = slider.scrollLeft;
+    const start = slider.querySelector('.slider-start');
+    const end = slider.querySelector('.slider-end');
     
-    // Вычисляем количество пройденных шагов (максимум 7 для 8 точек)
-    const currentStep = Math.min(Math.round(scrollLeft / step), 7);
+    if (!start || !end) {
+      // Фолбэк на старую логику
+      const step = getStep(slider);
+      const scrollLeft = slider.scrollLeft;
+      const currentStep = Math.min(Math.round(scrollLeft / step), 7);
+      
+      dots.forEach((dot, index) => {
+        if (index <= currentStep) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+      return;
+    }
+    
+    // Вычисляем прогресс скрола от 0 до 1
+    const startRect = start.getBoundingClientRect();
+    const endRect = end.getBoundingClientRect();
+    const sliderRect = slider.getBoundingClientRect();
+    
+    const startOffset = startRect.left - sliderRect.left;
+    const endOffset = endRect.right - sliderRect.left;
+    const totalDistance = endOffset - startOffset;
+    
+    // Текущая позиция скрола относительно start элемента
+    const currentOffset = slider.scrollLeft + startOffset;
+    
+    // Прогресс от 0 до 1
+    const progress = Math.max(0, Math.min(1, currentOffset / totalDistance));
+    
+    // Вычисляем количество активных точек (от 0 до 8)
+    const activeDots = Math.round(progress * (dots.length - 1));
     
     // Обновляем состояние каждой точки
     dots.forEach((dot, index) => {
-      if (index <= currentStep) {
+      if (index <= activeDots) {
         dot.classList.add('active');
       } else {
         dot.classList.remove('active');
