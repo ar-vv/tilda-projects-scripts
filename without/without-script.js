@@ -126,9 +126,19 @@
         const slider = getSliderFor(bar);
         if (!slider) return;
         
-        const step = getStep(slider);
         const dotIndex = parseInt(dot.getAttribute('data-index'));
-        slider.scrollLeft = dotIndex * step;
+        
+        // Вычисляем позицию скрола на основе прогресса
+        const maxScroll = slider.scrollWidth - slider.clientWidth;
+        const dotsCount = bar.querySelectorAll('.bar-dot').length;
+        
+        // Прогресс для этого кружочка (от 0 до 1)
+        const progress = dotsCount > 1 ? dotIndex / (dotsCount - 1) : 0;
+        
+        // Позиция скрола
+        const targetScroll = progress * maxScroll;
+        
+        slider.scrollLeft = targetScroll;
         updateDotsForSlider(slider, bar);
         return;
       }
