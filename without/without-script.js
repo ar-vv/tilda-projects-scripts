@@ -103,7 +103,8 @@
     const progress = maxScroll > 0 ? Math.max(0, Math.min(1, currentScroll / maxScroll)) : 0;
     
     // Вычисляем количество активных точек (от 0 до количества точек - 1)
-    const activeDots = Math.round(progress * (dots.length - 1));
+    // Используем Math.floor для точного соответствия с логикой клика
+    const activeDots = Math.floor(progress * (dots.length - 1));
     
     // Обновляем состояние каждой точки
     dots.forEach((dot, index) => {
