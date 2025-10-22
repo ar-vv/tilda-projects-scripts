@@ -134,10 +134,10 @@
         const width = block.offsetWidth;
         if (!width) return;
         
-        const molecules = document.querySelectorAll('.slider .tn-molecule');
-        molecules.forEach((molecule) => {
-          molecule.style.width = width + 'px';
-        });
+      const molecules = document.querySelectorAll('.slider > .tn-molecule');
+      molecules.forEach((molecule) => {
+        molecule.style.width = width + 'px';
+      });
       });
     }
     
