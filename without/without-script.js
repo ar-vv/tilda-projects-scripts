@@ -95,22 +95,14 @@
       return;
     }
     
-    // Вычисляем прогресс скрола от 0 до 1
-    const startRect = start.getBoundingClientRect();
-    const endRect = end.getBoundingClientRect();
-    const sliderRect = slider.getBoundingClientRect();
-    
-    const startOffset = startRect.left - sliderRect.left;
-    const endOffset = endRect.right - sliderRect.left;
-    const totalDistance = endOffset - startOffset;
-    
-    // Текущая позиция скрола относительно start элемента
-    const currentOffset = slider.scrollLeft + startOffset;
+    // Простая логика: вычисляем максимальный скролл и текущий прогресс
+    const maxScroll = slider.scrollWidth - slider.clientWidth;
+    const currentScroll = slider.scrollLeft;
     
     // Прогресс от 0 до 1
-    const progress = Math.max(0, Math.min(1, currentOffset / totalDistance));
+    const progress = maxScroll > 0 ? Math.max(0, Math.min(1, currentScroll / maxScroll)) : 0;
     
-    // Вычисляем количество активных точек (от 0 до 8)
+    // Вычисляем количество активных точек (от 0 до количества точек - 1)
     const activeDots = Math.round(progress * (dots.length - 1));
     
     // Обновляем состояние каждой точки
