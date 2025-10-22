@@ -85,7 +85,6 @@
 /* Эффект приподнятия при наведении */
 .mybutton a:hover {
   transform: translateY(-3px) scale(1.02) !important;
-  background-color: #3026ef !important;
 }
 
 /* ===========================================
