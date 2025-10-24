@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WITHOUT AGENCY - Loading</title>
+    
+    <!-- Медленные CSS файлы для тестирования -->
+    <link rel="stylesheet" href="https://httpbin.org/delay/2">
+    <link rel="stylesheet" href="https://httpbin.org/delay/3">
+    <link rel="stylesheet" href="https://httpbin.org/delay/1">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            width: 1280px;
+            height: 832px;
+        }
+        
+        .ellipse1 {
+            position: absolute;
+            width: 135px;
+            height: 183px;
+            left: 156px;
+            top: 453px;
+            background-color: #FC037F;
+            border-radius: 50%;
+            filter: blur(371px);
+        }
+        
+        .ellipse2 {
+            position: absolute;
+            width: 223px;
+            height: 303px;
+            left: 795px;
+            top: 232px;
+            background-color: #3026EF;
+            border-radius: 50%;
+            filter: blur(371px);
+        }
+        
+        .ellipse3 {
+            position: absolute;
+            width: 390px;
+            height: 280px;
+            left: 373px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: 2px solid #FC037F;
+            border-radius: 50%;
+            opacity: 0;
+            animation: ellipseCycle 2s ease-in-out infinite;
+            animation-delay: 0ms;
+        }
+        
+        .ellipse4 {
+            position: absolute;
+            width: 390px;
+            height: 280px;
+            left: 409px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: 2px solid #3026EF;
+            border-radius: 50%;
+            opacity: 0;
+            animation: ellipseCycle 2s ease-in-out infinite;
+            animation-delay: 400ms;
+        }
+        
+        .ellipse5 {
+            position: absolute;
+            width: 390px;
+            height: 280px;
+            left: 445px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: 2px solid #FC037F;
+            border-radius: 50%;
+            opacity: 0;
+            animation: ellipseCycle 2s ease-in-out infinite;
+            animation-delay: 800ms;
+        }
+        
+        .ellipse6 {
+            position: absolute;
+            width: 390px;
+            height: 280px;
+            left: 481px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: 2px solid #3026EF;
+            border-radius: 50%;
+            opacity: 0;
+            animation: ellipseCycle 2s ease-in-out infinite;
+            animation-delay: 400ms;
+        }
+        
+        .ellipse7 {
+            position: absolute;
+            width: 390px;
+            height: 280px;
+            left: 517px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: 2px solid #FC037F;
+            border-radius: 50%;
+            opacity: 0;
+            animation: ellipseCycle 2s ease-in-out infinite;
+            animation-delay: 0ms;
+        }
+        
+        @keyframes ellipseCycle {
+            0% {
+                opacity: 0;
+                transform: translateY(-50%) scale(0.8);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50%) scale(0.8);
+            }
+        }
+        
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+            color: white;
+        }
+        
+        .text-container span {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+        
+        .text-container .outline {
+            -webkit-text-stroke: 1px;
+        }
+        
+.text-container .fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease-out;
+}
+        
+        .text-container .without .outline {
+            -webkit-text-stroke-color: #3026EF;
+        }
+        
+        .text-container .without .fill {
+            color: #3026EF;
+        }
+        
+        .text-container .agency .outline {
+            -webkit-text-stroke-color: black;
+        }
+        
+        .text-container .agency .fill {
+            color: black;
+        }
+        
+        @keyframes fillAnimation {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+        
+        .loading-text {
+            position: absolute;
+            top: calc(50% + 140px + 60px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+        }
+        
+        .progress-indicator {
+            position: absolute;
+            top: calc(50% + 140px + 100px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Стили для основного контента */
+        #mainContent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        
+        #mainContent .content {
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            padding: 40px;
+        }
+        
+        #mainContent h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        #mainContent p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        #mainContent .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        #mainContent .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        #mainContent .feature h3 {
+            margin-top: 0;
+            color: #ffd700;
+        }
+        
+        #mainContent .loading-simulation {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        
+        #mainContent .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        #mainContent .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 550px) {
+            .ellipse3 {
+                width: 210px;
+                height: 152px;
+                left: 495px;
+            }
+            
+            .ellipse4 {
+                width: 210px;
+                height: 152px;
+                left: 515px;
+            }
+            
+            .ellipse5 {
+                width: 210px;
+                height: 152px;
+                left: 535px;
+            }
+            
+            .ellipse6 {
+                width: 210px;
+                height: 152px;
+                left: 555px;
+            }
+            
+            .ellipse7 {
+                width: 210px;
+                height: 152px;
+                left: 575px;
+            }
+            
+            .text-container {
+                font-size: 12px;
+            }
+            
+            .loading-text {
+                top: calc(50% + 76px + 30px);
+                font-size: 10px;
+            }
+            
+            .progress-indicator {
+                top: calc(50% + 76px + 60px);
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="ellipse1"></div>
+            <div class="ellipse2"></div>
+            <div class="ellipse3"></div>
+            <div class="ellipse4"></div>
+            <div class="ellipse5"></div>
+            <div class="ellipse6"></div>
+            <div class="ellipse7"></div>
+            <div class="text-container">
+                <span class="without">
+                    <span class="outline">WITHOUT</span>
+                    <span class="fill">WITHOUT</span>
+                </span>
+                <span class="agency">
+                    <span class="outline">AGENCY</span>
+                    <span class="fill">AGENCY</span>
+                </span>
+            </div>
+            <div class="loading-text">Идёт загрузка, подождите :)</div>
+            <div class="progress-indicator" id="progressIndicator">0%</div>
+        </div>
+    </div>
+
+    <!-- Основной контент страницы (скрыт до завершения загрузки) -->
+    <div id="mainContent" style="display: none;">
+        <div class="content">
+            <h1>WITHOUT AGENCY</h1>
+            <p>Добро пожаловать на нашу страницу! Здесь мы демонстрируем возможности современного веб-дизайна и пользовательского опыта.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>🎨 Креативный дизайн</h3>
+                    <p>Современные решения для визуального оформления вашего проекта</p>
+                </div>
+                <div class="feature">
+                    <h3>⚡ Быстрая разработка</h3>
+                    <p>Эффективные инструменты для ускорения процесса создания</p>
+                </div>
+                <div class="feature">
+                    <h3>📱 Адаптивность</h3>
+                    <p>Идеальное отображение на всех устройствах и экранах</p>
+                </div>
+                <div class="feature">
+                    <h3>🔧 Техническая поддержка</h3>
+                    <p>Круглосуточная помощь в решении любых вопросов</p>
+                </div>
+            </div>
+            
+            <div class="loading-simulation">
+                <h3>Тестирование долгой загрузки</h3>
+                <p>Загружаем большие изображения и ресурсы для тестирования лоадера...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="contentProgressFill"></div>
+                </div>
+            </div>
+            
+            <!-- Медленные изображения для тестирования долгой загрузки -->
+            <div class="test-images" style="display: none;">
+                <!-- Медленные изображения с задержкой -->
+                <img src="https://httpbin.org/delay/2/image/png" alt="Медленное изображение 1" style="width: 100%; max-width: 800px; height: auto;">
+                <img src="https://httpbin.org/delay/3/image/png" alt="Медленное изображение 2" style="width: 100%; max-width: 800px; height: auto;">
+                <img src="https://httpbin.org/delay/2/image/png" alt="Медленное изображение 3" style="width: 100%; max-width: 800px; height: auto;">
+                <img src="https://httpbin.org/delay/1/image/png" alt="Медленное изображение 4" style="width: 100%; max-width: 800px; height: auto;">
+                <img src="https://httpbin.org/delay/3/image/png" alt="Медленное изображение 5" style="width: 100%; max-width: 800px; height: auto;">
+                
+                <!-- Дополнительные медленные ресурсы -->
+                <img src="https://httpbin.org/delay/2/image/jpeg" alt="Медленное JPEG 1" style="width: 100%; max-width: 600px; height: auto;">
+                <img src="https://httpbin.org/delay/1/image/jpeg" alt="Медленное JPEG 2" style="width: 100%; max-width: 600px; height: auto;">
+                <img src="https://httpbin.org/delay/2/image/jpeg" alt="Медленное JPEG 3" style="width: 100%; max-width: 600px; height: auto;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Искусственное замедление сети для тестирования (только для разработки)
+        if (window.location.search.includes('slow')) {
+            console.log('Включен режим медленной загрузки для тестирования');
+            
+            // Перехватываем fetch запросы
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(originalFetch.apply(this, args));
+                    }, Math.random() * 2000 + 1000); // Задержка 1-3 секунды
+                });
+            };
+            
+            // Перехватываем создание изображений
+            const originalImage = window.Image;
+            window.Image = function() {
+                const img = new originalImage();
+                const originalSrc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+                Object.defineProperty(img, 'src', {
+                    set: function(value) {
+                        setTimeout(() => {
+                            originalSrc.set.call(this, value);
+                        }, Math.random() * 1500 + 500); // Задержка 0.5-2 секунды
+                    },
+                    get: originalSrc.get
+                });
+                return img;
+            };
+        }
+        
+        class PageLoader {
+            constructor() {
+                console.log('PageLoader: Конструктор запущен');
+                this.progress = 0;
+                this.progressIndicator = document.getElementById('progressIndicator');
+                this.textFill = document.querySelector('.text-container .fill');
+                this.isLoading = true;
+                this.startTime = Date.now();
+                
+                console.log('PageLoader: Элементы найдены:', {
+                    progressIndicator: !!this.progressIndicator,
+                    textFill: !!this.textFill
+                });
+                
+                this.init();
+            }
+            
+            init() {
+                // Слушаем события загрузки страницы
+                this.setupEventListeners();
+                
+                // Запускаем симуляцию загрузки
+                this.startSimulation();
+            }
+            
+            setupEventListeners() {
+                // Отслеживаем реальные события загрузки страницы
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.updateProgress(30);
+                });
+                
+                // Отслеживаем загрузку всех ресурсов
+                window.addEventListener('load', () => {
+                    this.updateProgress(100);
+                    setTimeout(() => {
+                        this.hideLoader();
+                    }, 1000);
+                });
+                
+                // Отслеживаем загрузку изображений
+                this.trackImages();
+                
+                // Отслеживаем загрузку шрифтов
+                this.trackFonts();
+            }
+            
+            startSimulation() {
+                // Запускаем отслеживание реального прогресса
+                this.trackRealProgress();
+                
+                // Fallback - минимум 2 секунды показа лоадера
+                setTimeout(() => {
+                    if (this.isLoading && this.progress < 100) {
+                        this.updateProgress(Math.min(this.progress + 20, 90));
+                    }
+                }, 2000);
+            }
+            
+            trackRealProgress() {
+                // Отслеживаем загрузку CSS
+                this.trackCSS();
+                
+                // Отслеживаем загрузку JavaScript
+                this.trackJavaScript();
+                
+                // Отслеживаем загрузку других ресурсов
+                this.trackOtherResources();
+            }
+            
+            trackImages() {
+                const images = document.querySelectorAll('img');
+                if (images.length === 0) return;
+                
+                let loadedImages = 0;
+                const totalImages = images.length;
+                
+                images.forEach(img => {
+                    if (img.complete) {
+                        loadedImages++;
+                    } else {
+                        img.addEventListener('load', () => {
+                            loadedImages++;
+                            const imageProgress = Math.round((loadedImages / totalImages) * 20); // 20% за изображения
+                            this.updateProgress(Math.min(this.progress + imageProgress, 80));
+                        });
+                        
+                        img.addEventListener('error', () => {
+                            loadedImages++;
+                            const imageProgress = Math.round((loadedImages / totalImages) * 20);
+                            this.updateProgress(Math.min(this.progress + imageProgress, 80));
+                        });
+                    }
+                });
+                
+                if (loadedImages === totalImages) {
+                    this.updateProgress(Math.min(this.progress + 20, 80));
+                }
+            }
+            
+            trackFonts() {
+                if ('fonts' in document) {
+                    document.fonts.ready.then(() => {
+                        this.updateProgress(Math.min(this.progress + 10, 90));
+                    });
+                }
+            }
+            
+            trackCSS() {
+                // Отслеживаем загрузку CSS файлов
+                const links = document.querySelectorAll('link[rel="stylesheet"]');
+                if (links.length === 0) {
+                    this.updateProgress(Math.min(this.progress + 15, 45));
+                    return;
+                }
+                
+                let loadedCSS = 0;
+                const totalCSS = links.length;
+                
+                links.forEach(link => {
+                    if (link.sheet) {
+                        loadedCSS++;
+                    } else {
+                        link.addEventListener('load', () => {
+                            loadedCSS++;
+                            const cssProgress = Math.round((loadedCSS / totalCSS) * 15); // 15% за CSS
+                            this.updateProgress(Math.min(this.progress + cssProgress, 45));
+                        });
+                    }
+                });
+                
+                if (loadedCSS === totalCSS) {
+                    this.updateProgress(Math.min(this.progress + 15, 45));
+                }
+            }
+            
+            trackJavaScript() {
+                // Отслеживаем загрузку JavaScript файлов
+                const scripts = document.querySelectorAll('script[src]');
+                if (scripts.length === 0) {
+                    this.updateProgress(Math.min(this.progress + 10, 55));
+                    return;
+                }
+                
+                let loadedJS = 0;
+                const totalJS = scripts.length;
+                
+                scripts.forEach(script => {
+                    if (script.readyState === 'complete' || script.readyState === 'loaded') {
+                        loadedJS++;
+                    } else {
+                        script.addEventListener('load', () => {
+                            loadedJS++;
+                            const jsProgress = Math.round((loadedJS / totalJS) * 10); // 10% за JS
+                            this.updateProgress(Math.min(this.progress + jsProgress, 55));
+                        });
+                    }
+                });
+                
+                if (loadedJS === totalJS) {
+                    this.updateProgress(Math.min(this.progress + 10, 55));
+                }
+            }
+            
+            trackOtherResources() {
+                // Отслеживаем загрузку других ресурсов (аудио, видео, iframe)
+                const otherResources = document.querySelectorAll('audio, video, iframe');
+                if (otherResources.length === 0) return;
+                
+                let loadedOthers = 0;
+                const totalOthers = otherResources.length;
+                
+                otherResources.forEach(resource => {
+                    resource.addEventListener('load', () => {
+                        loadedOthers++;
+                        const otherProgress = Math.round((loadedOthers / totalOthers) * 5); // 5% за другие ресурсы
+                        this.updateProgress(Math.min(this.progress + otherProgress, 95));
+                    });
+                });
+            }
+            
+            updateProgress(newProgress) {
+                this.progress = Math.max(this.progress, newProgress);
+                this.progressIndicator.textContent = `${this.progress}%`;
+                
+                // Обновляем анимацию заливки текста
+                this.updateTextFill();
+            }
+            
+            updateTextFill() {
+                // Синхронизируем заливку текста с прогрессом
+                const fillElements = document.querySelectorAll('.text-container .fill');
+                fillElements.forEach(element => {
+                    // Плавная анимация изменения ширины
+                    element.style.transition = 'width 0.3s ease-out';
+                    element.style.width = `${this.progress}%`;
+                });
+                
+                console.log(`Прогресс заливки текста: ${this.progress}%`);
+            }
+            
+            
+            hideLoader() {
+                this.isLoading = false;
+                
+                // Плавно скрываем лоадер
+                const container = document.querySelector('.container');
+                container.style.opacity = '0';
+                container.style.transition = 'opacity 0.5s ease-out';
+                
+                setTimeout(() => {
+                    // Скрываем лоадер и показываем контент
+                    container.style.display = 'none';
+                    this.showContent();
+                }, 500);
+            }
+            
+            showContent() {
+                // Показываем основной контент страницы
+                const content = document.getElementById('mainContent');
+                if (content) {
+                    content.style.display = 'block';
+                    content.style.opacity = '0';
+                    content.style.transition = 'opacity 0.5s ease-in';
+                    setTimeout(() => {
+                        content.style.opacity = '1';
+                        // Запускаем анимацию прогресс-бара в контенте
+                        this.startContentAnimation();
+                    }, 100);
+                }
+            }
+            
+            startContentAnimation() {
+                // Анимация прогресс-бара в основном контенте
+                const progressFill = document.getElementById('contentProgressFill');
+                if (progressFill) {
+                    let progress = 0;
+                    const animate = () => {
+                        progress += Math.random() * 15;
+                        if (progress > 100) progress = 100;
+                        
+                        progressFill.style.width = progress + '%';
+                        
+                        if (progress < 100) {
+                            setTimeout(animate, Math.random() * 500 + 200);
+                        }
+                    };
+                    
+                    setTimeout(animate, 1000);
+                }
+                
+                // Загружаем дополнительные данные для тестирования
+                this.loadAdditionalData();
+            }
+            
+            loadAdditionalData() {
+                // Создаем большой JSON объект для загрузки
+                const largeData = {
+                    users: Array.from({length: 1000}, (_, i) => ({
+                        id: i,
+                        name: `User ${i}`,
+                        email: `user${i}@example.com`,
+                        avatar: `https://picsum.photos/100/100?random=${i}`,
+                        bio: `This is a long bio for user ${i}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+                        posts: Array.from({length: 10}, (_, j) => ({
+                            id: j,
+                            title: `Post ${j} by User ${i}`,
+                            content: `This is post content ${j} by user ${i}. It contains a lot of text to make the JSON file larger.`,
+                            image: `https://picsum.photos/400/300?random=${i}${j}`
+                        }))
+                    })),
+                    settings: {
+                        theme: 'dark',
+                        language: 'ru',
+                        notifications: true,
+                        data: Array.from({length: 100}, (_, i) => `Data item ${i}`)
+                    }
+                };
+                
+                // Симулируем загрузку большого JSON файла
+                setTimeout(() => {
+                    console.log('Загружен большой JSON файл:', largeData);
+                }, 3000);
+                
+                // Загружаем дополнительные изображения
+                this.loadAdditionalImages();
+            }
+            
+            loadAdditionalImages() {
+                const slowImages = [
+                    'https://httpbin.org/delay/2/image/png',
+                    'https://httpbin.org/delay/3/image/png', 
+                    'https://httpbin.org/delay/1/image/png',
+                    'https://httpbin.org/delay/2/image/jpeg',
+                    'https://httpbin.org/delay/3/image/jpeg',
+                    'https://httpbin.org/delay/1/image/jpeg'
+                ];
+                
+                slowImages.forEach((src, index) => {
+                    setTimeout(() => {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => {
+                            console.log(`Медленное изображение ${index + 1} загружено`);
+                        };
+                        img.onerror = () => {
+                            console.log(`Ошибка загрузки изображения ${index + 1}`);
+                        };
+                    }, index * 500);
+                });
+            }
+        }
+        
+        // Простая и надежная логика - всегда показываем лоадер
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM загружен, запускаем лоадер...');
+            // Запускаем лоадер
+            new PageLoader();
+        });
+    </script>
+    
+    <!-- Медленные JavaScript файлы для тестирования -->
+    <script src="https://httpbin.org/delay/2"></script>
+    <script src="https://httpbin.org/delay/3"></script>
+    <script src="https://httpbin.org/delay/1"></script>
+    <script src="https://httpbin.org/delay/2"></script>
+    <script src="https://httpbin.org/delay/1"></script>
+</body>
+</html>

@@ -405,6 +405,81 @@ syncWidth(sliderWidth, slider);
 });
 
 // ===========================================
+// ИСПРАВЛЕНИЕ ПРОБЛЕМ С SVG В МОБИЛЬНОМ SAFARI
+// ===========================================
+// Исправляет проблему "съезжания" SVG элементов вниз в мобильном Safari
+(function() {
+  let initialized = false;
+  
+  function fixSVGInSafari() {
+    if (initialized) return;
+    initialized = true;
+    
+    // Проверяем, что это мобильный Safari
+    const isMobileSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+                          /Safari/.test(navigator.userAgent) && 
+                          !/Chrome/.test(navigator.userAgent);
+    
+    if (!isMobileSafari) return;
+    
+    // Находим все SVG элементы
+    const svgElements = document.querySelectorAll('svg');
+    
+    svgElements.forEach(svg => {
+      applySVGFix(svg);
+    });
+    
+    // Наблюдаем за добавлением новых SVG элементов
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) { // Element node
+            if (node.tagName === 'SVG') {
+              applySVGFix(node);
+            }
+            // Проверяем дочерние SVG элементы
+            const childSvgs = node.querySelectorAll && node.querySelectorAll('svg');
+            if (childSvgs) {
+              childSvgs.forEach(applySVGFix);
+            }
+          }
+        });
+      });
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+  
+  function applySVGFix(svg) {
+    // Принудительно устанавливаем стили для исправления позиционирования
+    svg.style.display = 'block';
+    svg.style.position = 'relative';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    svg.style.transform = 'translateZ(0)';
+    svg.style.webkitTransform = 'translateZ(0)';
+    svg.style.willChange = 'transform';
+    
+    // Убираем возможные отступы
+    svg.style.margin = '0';
+    svg.style.padding = '0';
+    
+    // Принудительный пересчет стилей
+    svg.offsetHeight;
+  }
+  
+  // Запуск при загрузке страницы
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixSVGInSafari);
+  } else {
+    fixSVGInSafari();
+  }
+})();
+
+// ===========================================
 // BURGER МЕНЮ
 // ===========================================
 document.addEventListener('DOMContentLoaded', function() {

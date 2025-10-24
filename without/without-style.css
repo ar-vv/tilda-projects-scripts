@@ -214,6 +214,57 @@
 }
 
 /* ===========================================
+   ИСПРАВЛЕНИЕ ПРОБЛЕМ С SVG В МОБИЛЬНОМ SAFARI
+   =========================================== */
+/* Исправляет проблему "съезжания" SVG элементов вниз в мобильном Safari */
+svg {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Дополнительные исправления для SVG с анимацией */
+svg[viewBox] {
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+}
+
+/* Исправление для SVG внутри контейнеров Tilda */
+.tn-atom svg,
+.tn-element svg,
+div svg {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Специальные исправления для мобильного Safari */
+@supports (-webkit-touch-callout: none) {
+  svg {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    will-change: transform !important;
+  }
+}
+
+/* Дополнительные исправления для SVG с анимацией stroke-dashoffset */
+svg path[stroke-dasharray] {
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+}
+
+/* Исправление для SVG внутри flex-контейнеров */
+.flex svg,
+.d-flex svg,
+[style*="display: flex"] svg {
+  flex-shrink: 0 !important;
+  align-self: flex-start !important;
+}
+
+/* ===========================================
    ФОРМЫ: скрываем дефолтную кнопку сабмита
    =========================================== */
 /* При использовании <a href="#Submit"> скрываем стандартные submit-кнопки */
