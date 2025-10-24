@@ -343,6 +343,26 @@ atom.style.backgroundColor='transparent';
 atom.style.background='transparent';
 atom.style.opacity='0';
 }
+
+// Добавляем отслеживание изменений borderRadius у tn-atom
+if(atom){
+var observer=new MutationObserver(function(mutations){
+mutations.forEach(function(mutation){
+if(mutation.type==='attributes'&&(mutation.attributeName==='style'||mutation.attributeName==='class')){
+var newBr=getComputedStyle(atom).borderRadius||'24px';
+el.style.borderRadius=newBr;
+el.style.webkitBorderRadius=newBr;
+layer.style.borderRadius=newBr;
+layer.style.webkitBorderRadius=newBr;
+border.style.borderRadius=newBr;
+border.style.webkitBorderRadius=newBr;
+shadow.style.borderRadius=newBr;
+shadow.style.webkitBorderRadius=newBr;
+}
+});
+});
+observer.observe(atom,{attributes:true,attributeFilter:['style','class']});
+}
 });
 }
 if(document.readyState==='loading'){
