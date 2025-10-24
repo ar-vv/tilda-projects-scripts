@@ -400,6 +400,58 @@ document.addEventListener("DOMContentLoaded", function() {
     target.style.width = source.offsetWidth + "px";
   }
 
-  syncWidth(tickerWidth, ticker);
-  syncWidth(sliderWidth, slider);
+syncWidth(tickerWidth, ticker);
+syncWidth(sliderWidth, slider);
+});
+
+// ===========================================
+// BURGER МЕНЮ
+// ===========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим все элементы с классом .burger
+    const burgerContainers = document.querySelectorAll('.burger');
+    
+    burgerContainers.forEach(function(container) {
+        // Находим div внутри .burger
+        const innerDiv = container.querySelector('div');
+        
+        if (innerDiv) {
+            // Создаем кнопку
+            const burgerButton = document.createElement('button');
+            burgerButton.className = 'burger-button';
+            burgerButton.setAttribute('aria-label', 'Меню');
+            
+            // Создаем три полоски
+            for (let i = 0; i < 3; i++) {
+                const span = document.createElement('span');
+                burgerButton.appendChild(span);
+            }
+            
+            // Вставляем кнопку в div внутри .burger
+            innerDiv.appendChild(burgerButton);
+            
+            // Сохраняем состояние в localStorage с уникальным ключом
+            const containerId = container.id || 'burger-' + Math.random().toString(36).substr(2, 9);
+            if (!container.id) {
+                container.id = containerId;
+            }
+            
+            const savedState = localStorage.getItem('burgerButtonState_' + containerId);
+            if (savedState === 'active') {
+                burgerButton.classList.add('active');
+            }
+
+            // Добавляем обработчик клика
+            burgerButton.addEventListener('click', function() {
+                this.classList.toggle('active');
+                
+                // Сохраняем состояние
+                if (this.classList.contains('active')) {
+                    localStorage.setItem('burgerButtonState_' + containerId, 'active');
+                } else {
+                    localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
+                }
+            });
+        }
+    });
 });
