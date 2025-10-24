@@ -152,17 +152,36 @@
         const slider = getSliderFor(arrow);
         if (!slider) return;
         
-        const step = getStep(slider);
+        const bar = document.querySelector('.bar');
+        if (!bar) return;
+        
+        // Используем ту же логику, что и для точек навигации
+        const maxScroll = slider.scrollWidth - slider.clientWidth;
+        const dotsCount = bar.querySelectorAll('.bar-dot').length;
+        
+        if (dotsCount <= 1) return;
+        
+        // Вычисляем текущий прогресс
+        const currentScroll = slider.scrollLeft;
+        const currentProgress = maxScroll > 0 ? Math.max(0, Math.min(1, currentScroll / maxScroll)) : 0;
+        
+        // Вычисляем шаг прогресса (1 шаг = 1/(количество точек - 1))
+        const progressStep = 1 / (dotsCount - 1);
+        
+        let newProgress;
         if (arrow.getAttribute('href') === '#right') {
-          slider.scrollLeft += step;
+          // Движение вправо
+          newProgress = Math.min(1, currentProgress + progressStep);
         } else {
-          slider.scrollLeft -= step;
+          // Движение влево
+          newProgress = Math.max(0, currentProgress - progressStep);
         }
         
-        const bar = document.querySelector('.bar');
-        if (bar) {
-          updateDotsForSlider(slider, bar);
-        }
+        // Вычисляем новую позицию скрола
+        const targetScroll = Math.round(newProgress * maxScroll);
+        
+        slider.scrollLeft = targetScroll;
+        updateDotsForSlider(slider, bar);
         return;
       }
     }, { passive: false });
