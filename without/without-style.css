@@ -41,6 +41,13 @@
 /* ===========================================
    СТИЛИ ДЛЯ BURGER МЕНЮ
    =========================================== */
+/* Блокировка скролла когда меню открыто */
+body.burger-menu-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
 .burger {
     position: relative;
 }
@@ -131,65 +138,65 @@
     }
     
     /* Анимация появления снизу с задержками для каждого элемента */
-    /* Начинаем с задержки 0.1s после появления menu-back */
+    /* Без задержки после появления menu-back - кнопки появляются сразу */
     .burger-open .mylink:nth-of-type(1),
     .burger-open ~ .mylink:nth-of-type(1),
     * .burger-open .mylink:nth-of-type(1) {
-        animation-delay: 0.2s;
+        animation-delay: 0s;
     }
     
     .burger-open .mylink:nth-of-type(2),
     .burger-open ~ .mylink:nth-of-type(2),
     * .burger-open .mylink:nth-of-type(2) {
-        animation-delay: 0.25s;
+        animation-delay: 0.05s;
     }
     
     .burger-open .mylink:nth-of-type(3),
     .burger-open ~ .mylink:nth-of-type(3),
     * .burger-open .mylink:nth-of-type(3) {
-        animation-delay: 0.3s;
+        animation-delay: 0.1s;
     }
     
     .burger-open .mylink:nth-of-type(4),
     .burger-open ~ .mylink:nth-of-type(4),
     * .burger-open .mylink:nth-of-type(4) {
-        animation-delay: 0.35s;
+        animation-delay: 0.15s;
     }
     
     .burger-open .mylink:nth-of-type(5),
     .burger-open ~ .mylink:nth-of-type(5),
     * .burger-open .mylink:nth-of-type(5) {
-        animation-delay: 0.4s;
+        animation-delay: 0.2s;
     }
     
     .burger-open .mylink:nth-of-type(6),
     .burger-open ~ .mylink:nth-of-type(6),
     * .burger-open .mylink:nth-of-type(6) {
-        animation-delay: 0.45s;
+        animation-delay: 0.25s;
     }
     
     .burger-open .mylink:nth-of-type(7),
     .burger-open ~ .mylink:nth-of-type(7),
     * .burger-open .mylink:nth-of-type(7) {
-        animation-delay: 0.5s;
+        animation-delay: 0.3s;
     }
     
     .burger-open .mylink:nth-of-type(8),
     .burger-open ~ .mylink:nth-of-type(8),
     * .burger-open .mylink:nth-of-type(8) {
-        animation-delay: 0.55s;
+        animation-delay: 0.35s;
     }
     
     .burger-open .mylink:nth-of-type(9),
     .burger-open ~ .mylink:nth-of-type(9),
     * .burger-open .mylink:nth-of-type(9) {
-        animation-delay: 0.6s;
+        animation-delay: 0.4s;
     }
     
     .burger-open .mylink:nth-of-type(10),
     .burger-open ~ .mylink:nth-of-type(10),
     * .burger-open .mylink:nth-of-type(10) {
-        animation-delay: 0.65s;
+        animation-delay: 0.45s;
     }
 }
 

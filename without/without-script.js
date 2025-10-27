@@ -502,6 +502,41 @@ syncWidth(sliderWidth, slider);
 // BURGER МЕНЮ
 // ===========================================
 document.addEventListener('DOMContentLoaded', function() {
+    // Функция для открытия меню
+    function openMenu(container) {
+        container.classList.add('burger-open');
+        if (container.parentElement) {
+            container.parentElement.classList.add('burger-open');
+        }
+        // Блокируем скролл
+        document.body.classList.add('burger-menu-open');
+    }
+    
+    // Функция для закрытия меню
+    function closeMenu(container) {
+        container.classList.remove('burger-open');
+        if (container.parentElement) {
+            container.parentElement.classList.remove('burger-open');
+        }
+        // Разблокируем скролл
+        document.body.classList.remove('burger-menu-open');
+    }
+    
+    // Функция для закрытия всех меню
+    function closeAllMenus() {
+        const allContainers = document.querySelectorAll('.burger');
+        allContainers.forEach(container => closeMenu(container));
+        
+        // Сбрасываем все состояния бургеров
+        document.querySelectorAll('.burger-button').forEach(btn => {
+            btn.classList.remove('active');
+            const container = btn.closest('.burger');
+            if (container && container.id) {
+                localStorage.setItem('burgerButtonState_' + container.id, 'inactive');
+            }
+        });
+    }
+    
     // Находим все элементы с классом .burger
     const burgerContainers = document.querySelectorAll('.burger');
     
@@ -534,33 +569,39 @@ document.addEventListener('DOMContentLoaded', function() {
             if (savedState === 'active') {
                 burgerButton.classList.add('active');
                 // Восстанавливаем класс burger-open при загрузке страницы
-                container.classList.add('burger-open');
-                container.parentElement && container.parentElement.classList.add('burger-open');
+                openMenu(container);
             }
 
             // Добавляем обработчик клика
             burgerButton.addEventListener('click', function() {
                 this.classList.toggle('active');
                 
-                // Добавляем/удаляем класс к родительскому контейнеру
-                const container = this.closest('.burger');
-                if (container) {
-                    if (this.classList.contains('active')) {
-                        container.classList.add('burger-open');
-                        container.parentElement && container.parentElement.classList.add('burger-open');
-                    } else {
-                        container.classList.remove('burger-open');
-                        container.parentElement && container.parentElement.classList.remove('burger-open');
-                    }
-                }
-                
-                // Сохраняем состояние
                 if (this.classList.contains('active')) {
+                    openMenu(container);
                     localStorage.setItem('burgerButtonState_' + containerId, 'active');
                 } else {
+                    closeMenu(container);
                     localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
                 }
             });
+        }
+    });
+    
+    // Обработчик клика по ссылкам в mylink - закрываем меню и переходим по ссылке
+    document.addEventListener('click', function(e) {
+        const mylinkElement = e.target.closest('.mylink');
+        if (mylinkElement) {
+            const link = mylinkElement.querySelector('a');
+            if (link && link.href && !link.href.includes('javascript:')) {
+                // Закрываем все меню
+                closeAllMenus();
+                
+                // Переходим по ссылке
+                e.preventDefault();
+                setTimeout(() => {
+                    window.location.href = link.href;
+                }, 100);
+            }
         }
     });
 });
