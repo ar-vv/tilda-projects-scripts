@@ -680,33 +680,19 @@ form button[type="submit"] {
 }
 
 /* ===========================================
-   КРИТИЧЕСКИЕ ОПТИМИЗАЦИИ ДЛЯ СКРОЛЛА
+   ОПТИМИЗАЦИИ ДЛЯ СКРОЛЛА
    =========================================== */
-/* Оптимизация для предотвращения белого экрана при быстром скролле */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* GPU ускорение для всех контейнеров Tilda */
+/* GPU ускорение для основных элементов */
 .tn-atom,
 .tn-element,
 .tn-molecule {
-  contain: layout style;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
 
-/* ОПТИМИЗАЦИЯ ДЛЯ БЛОКОВ С ИЗОБРАЖЕНИЯМИ */
 img {
-  contain: layout;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
-}
-
-/* Ленивая загрузка для изображений - БЕЗ content-visibility */
-img[loading="lazy"] {
-  opacity: 1;
 }
 
 /* ===========================================
@@ -714,36 +700,15 @@ img[loading="lazy"] {
    =========================================== */
 /* Оптимизация производительности для всех мобильных устройств */
 @media (max-width: 768px) {
-  /* Оптимизация для элементов с анимацией */
-  [class*="blur"],
-  [class*="glass"],
-  [class*="slide"] {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
+  /* Улучшаем blur эффект на мобильных */
+  .myblur {
+    filter: blur(60px) !important;
   }
   
-  /* Уменьшаем количество layers для мобильных */
-  .mybutton a,
-  .mylink a,
-  .burger-button {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-  
-  /* Дополнительная оптимизация для Tilda элементов на мобильных */
-  .tn-atom,
-  .tn-element,
-  .tn-molecule {
-    contain: layout style;
-  }
-  
-  /* Упрощаем эффекты на мобильных */
-  img,
-  video,
-  iframe {
-    contain: layout;
+  /* Упрощаем glass эффект на мобильных */
+  .glass-layer {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
   }
 }
 

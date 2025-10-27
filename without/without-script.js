@@ -466,42 +466,12 @@ window.addEventListener('load',function(){setTimeout(init,300)});
     };
   }
   
-  // Оптимизация для предотвращения белого экрана при быстром скролле
+  // Простая оптимизация: ленивая загрузка изображений
   function optimizeScrollPerformance() {
-    // Добавляем data-scroll атрибут только для трекинга
-    const scrollElements = document.querySelectorAll('img, .tn-atom, .tn-element');
-    scrollElements.forEach(el => {
-      if (!el.hasAttribute('data-scroll')) {
-        el.setAttribute('data-scroll', 'true');
-      }
-    });
-    
-    // Устанавливаем loading="lazy" для всех изображений БЕЗ content-visibility
+    // Устанавливаем loading="lazy" для всех изображений
     document.querySelectorAll('img:not([loading])').forEach(img => {
       img.loading = 'lazy';
     });
-    
-    // Оптимизация: предзагрузка элементов которые скоро станут видимыми
-    const optimizeVisibleElements = () => {
-      const elements = document.querySelectorAll('[data-scroll]');
-      elements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight + 300 && rect.bottom > -300;
-        
-        // Добавляем GPU ускорение для видимых элементов
-        if (isVisible) {
-          el.style.transform = 'translateZ(0)';
-          el.style.webkitTransform = 'translateZ(0)';
-        }
-      });
-    };
-    
-    // Запускаем оптимизацию при скролле (throttled)
-    const throttledOptimize = throttleLocal(optimizeVisibleElements, 150);
-    window.addEventListener('scroll', throttledOptimize, { passive: true });
-    
-    // Запускаем сразу
-    optimizeVisibleElements();
   }
   
   // Запускаем оптимизацию
