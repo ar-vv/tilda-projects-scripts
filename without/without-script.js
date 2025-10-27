@@ -440,6 +440,87 @@ window.addEventListener('load',function(){setTimeout(init,300)});
 })();
 
 // ===========================================
+// КРИТИЧЕСКАЯ ОПТИМИЗАЦИЯ ДЛЯ СКРОЛЛА
+// ===========================================
+// Автоматическая оптимизация элементов для быстрого скролла
+(function() {
+  'use strict';
+  
+  // Локальная throttle функция для оптимизации скролла
+  function throttleLocal(func, delay) {
+    let timeoutId;
+    let lastExecTime = 0;
+    return function (...args) {
+      const currentTime = Date.now();
+      
+      if (currentTime - lastExecTime > delay) {
+        func.apply(this, args);
+        lastExecTime = currentTime;
+      } else {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          func.apply(this, args);
+          lastExecTime = Date.now();
+        }, delay - (currentTime - lastExecTime));
+      }
+    };
+  }
+  
+  // Оптимизация для предотвращения белого экрана при быстром скролле
+  function optimizeScrollPerformance() {
+    // Добавляем data-scroll атрибут для content-visibility
+    const scrollElements = document.querySelectorAll('img, .tn-atom, .tn-element, .t-photo, .t-video');
+    scrollElements.forEach(el => {
+      if (!el.hasAttribute('data-scroll')) {
+        el.setAttribute('data-scroll', 'true');
+      }
+    });
+    
+    // Устанавливаем loading="lazy" для всех изображений
+    document.querySelectorAll('img:not([loading])').forEach(img => {
+      img.loading = 'lazy';
+    });
+    
+    // Оптимизация скролла с requestAnimationFrame
+    let ticking = false;
+    function smoothScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          // Принудительное обновление контента при скролле
+          document.querySelectorAll('[data-scroll]').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight + 100 && rect.bottom > -100;
+            
+            if (isVisible && el.style.contentVisibility === 'auto') {
+              // Элемент видим - рендерим
+              el.style.willChange = 'contents';
+            }
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    
+    // Throttled scroll listener
+    const throttledScroll = throttleLocal(smoothScroll, 100);
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+  }
+  
+  // Запускаем оптимизацию
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', optimizeScrollPerformance);
+  } else {
+    optimizeScrollPerformance();
+  }
+  
+  // Запускаем также после полной загрузки для динамических элементов
+  window.addEventListener('load', () => {
+    setTimeout(optimizeScrollPerformance, 100);
+  });
+})();
+
+// ===========================================
 // СИНХРОНИЗАЦИЯ ШИРИНЫ ТИКЕРА И СЛАЙДЕРА
 // ===========================================
 // Синхронизирует ширину .ticker с .ticker-width и .slider с .slider-width

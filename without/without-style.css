@@ -680,16 +680,58 @@ form button[type="submit"] {
 }
 
 /* ===========================================
+   КРИТИЧЕСКИЕ ОПТИМИЗАЦИИ ДЛЯ СКРОЛЛА
+   =========================================== */
+/* Оптимизация для предотвращения белого экрана при быстром скролле */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* GPU ускорение для всех контейнеров Tilda */
+.tn-atom,
+.tn-element,
+.tn-molecule {
+  contain: layout style paint;
+  will-change: contents;
+}
+
+/* Критическая оптимизация: content-visibility для элементов вне viewport */
+/* Это заставляет браузер пропускать рендеринг невидимых элементов */
+[data-scroll],
+.t-comparison-image,
+.t-photo,
+.t-image,
+.t-video {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
+/* ОПТИМИЗАЦИЯ ДЛЯ БЛОКОВ С ИЗОБРАЖЕНИЯМИ */
+img {
+  content-visibility: auto;
+  contain: layout style;
+  will-change: auto;
+}
+
+/* Ленивая загрузка для изображений */
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+
+/* Оптимизация для карточек и блоков контента */
+.t-block,
+.t-diagram,
+.t-card {
+  contain: layout style;
+  content-visibility: auto;
+}
+
+/* ===========================================
    ОБЩИЕ ОПТИМИЗАЦИИ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
    =========================================== */
 /* Оптимизация производительности для всех мобильных устройств */
 @media (max-width: 768px) {
-  /* Отключаем сложные эффекты на слабых устройствах */
-  * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
   /* Оптимизация для элементов с анимацией */
   [class*="blur"],
   [class*="glass"],
@@ -698,8 +740,6 @@ form button[type="submit"] {
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-perspective: 1000;
-    perspective: 1000;
   }
   
   /* Уменьшаем количество layers для мобильных */
@@ -708,6 +748,21 @@ form button[type="submit"] {
   .burger-button {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+  }
+  
+  /* Дополнительная оптимизация для Tilda элементов на мобильных */
+  .tn-atom,
+  .tn-element,
+  .tn-molecule {
+    contain: strict;
+  }
+  
+  /* Упрощаем эффекты на мобильных */
+  img,
+  video,
+  iframe {
+    content-visibility: auto;
+    will-change: auto;
   }
 }
 
