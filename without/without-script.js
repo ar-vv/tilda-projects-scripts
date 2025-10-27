@@ -587,35 +587,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Проверяем, дал ли пользователь согласие
   function hasConsent() {
-    // Проверяем localStorage (для браузера)
+    // Проверяем localStorage
     const storedConsent = localStorage.getItem(COOKIE_CONSENT_KEY);
-    
-    // Проверяем cookie (для совместимости с другими приложениями)
-    const cookieConsent = getCookie(COOKIE_CONSENT_KEY);
-    
-    // Если найдено согласие в localStorage или cookie, вернуть true
-    if (storedConsent === 'accepted' || cookieConsent === 'accepted') {
-      return true;
-    }
-    
-    return false;
-  }
-
-  // Получаем cookie
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop().split(';').shift();
-    }
-    return null;
-  }
-
-  // Устанавливаем cookie
-  function setCookie(name, value, days = 365) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+    return storedConsent === 'accepted';
   }
 
   // Сохраняем согласие
@@ -627,12 +601,9 @@ document.addEventListener('DOMContentLoaded', function() {
       timestamp: new Date().toISOString()
     };
 
-    // Сохраняем в localStorage
+    // Сохраняем в localStorage (единая точка хранения)
     localStorage.setItem(COOKIE_CONSENT_KEY, consentValue);
-    
-    // Сохраняем в cookie для совместимости
-    setCookie(COOKIE_CONSENT_KEY, consentValue, 365);
-    setCookie(`${COOKIE_CONSENT_KEY}_data`, JSON.stringify(consentData), 365);
+    localStorage.setItem(`${COOKIE_CONSENT_KEY}_data`, JSON.stringify(consentData));
     
     // Запускаем событие для других скриптов
     window.dispatchEvent(new CustomEvent('cookieConsentChanged', {
