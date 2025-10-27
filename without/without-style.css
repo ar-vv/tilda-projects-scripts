@@ -399,6 +399,7 @@ form button[type="submit"] {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
+    max-width: calc(100% - 16px);
   }
 
   .cookie-consent-text {
@@ -410,6 +411,8 @@ form button[type="submit"] {
     flex-direction: column;
     width: 100%;
     gap: 8px;
+    padding: 0 16px;
+    box-sizing: border-box;
   }
 
   .cookie-consent-btn {
@@ -420,11 +423,20 @@ form button[type="submit"] {
 
 @media (max-width: 480px) {
   .cookie-consent-banner {
-    padding: 14px;
+    padding: 14px 16px;
+  }
+
+  .cookie-consent-wrapper {
+    max-width: calc(100% - 16px);
   }
 
   .cookie-consent-text {
     font-size: 12px;
+  }
+
+  .cookie-consent-buttons {
+    padding: 0 16px;
+    box-sizing: border-box;
   }
 
   .cookie-consent-btn {

@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="cookie-consent-text">
           Мы используем файлы cookie и другие технологии для улучшения работы сайта, аналитики и персонализации контента. 
           Продолжая использовать наш сайт, вы даете согласие на использование файлов cookie в соответствии с нашей 
-          <a href="/privacy-policy" target="_blank">Политикой конфиденциальности</a>.
+          <a href="https://docs.google.com/document/d/1dVBOkRvPw-t-Fae05xhYXOaeqaM2Wcgo/edit" target="_blank">Политикой обработки персональных данных</a>.
         </div>
         <div class="cookie-consent-buttons">
           <button class="cookie-consent-btn cookie-consent-btn-accept" id="acceptCookies">Принять</button>
