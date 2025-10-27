@@ -692,39 +692,21 @@ form button[type="submit"] {
 .tn-atom,
 .tn-element,
 .tn-molecule {
-  contain: layout style paint;
-  will-change: contents;
-}
-
-/* Критическая оптимизация: content-visibility для элементов вне viewport */
-/* Это заставляет браузер пропускать рендеринг невидимых элементов */
-[data-scroll],
-.t-comparison-image,
-.t-photo,
-.t-image,
-.t-video {
-  content-visibility: auto;
-  contain-intrinsic-size: 200px;
+  contain: layout style;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* ОПТИМИЗАЦИЯ ДЛЯ БЛОКОВ С ИЗОБРАЖЕНИЯМИ */
 img {
-  content-visibility: auto;
-  contain: layout style;
-  will-change: auto;
+  contain: layout;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
-/* Ленивая загрузка для изображений */
+/* Ленивая загрузка для изображений - БЕЗ content-visibility */
 img[loading="lazy"] {
-  content-visibility: auto;
-}
-
-/* Оптимизация для карточек и блоков контента */
-.t-block,
-.t-diagram,
-.t-card {
-  contain: layout style;
-  content-visibility: auto;
+  opacity: 1;
 }
 
 /* ===========================================
@@ -754,15 +736,14 @@ img[loading="lazy"] {
   .tn-atom,
   .tn-element,
   .tn-molecule {
-    contain: strict;
+    contain: layout style;
   }
   
   /* Упрощаем эффекты на мобильных */
   img,
   video,
   iframe {
-    content-visibility: auto;
-    will-change: auto;
+    contain: layout;
   }
 }
 

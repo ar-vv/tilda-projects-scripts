@@ -468,43 +468,40 @@ window.addEventListener('load',function(){setTimeout(init,300)});
   
   // Оптимизация для предотвращения белого экрана при быстром скролле
   function optimizeScrollPerformance() {
-    // Добавляем data-scroll атрибут для content-visibility
-    const scrollElements = document.querySelectorAll('img, .tn-atom, .tn-element, .t-photo, .t-video');
+    // Добавляем data-scroll атрибут только для трекинга
+    const scrollElements = document.querySelectorAll('img, .tn-atom, .tn-element');
     scrollElements.forEach(el => {
       if (!el.hasAttribute('data-scroll')) {
         el.setAttribute('data-scroll', 'true');
       }
     });
     
-    // Устанавливаем loading="lazy" для всех изображений
+    // Устанавливаем loading="lazy" для всех изображений БЕЗ content-visibility
     document.querySelectorAll('img:not([loading])').forEach(img => {
       img.loading = 'lazy';
     });
     
-    // Оптимизация скролла с requestAnimationFrame
-    let ticking = false;
-    function smoothScroll() {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          // Принудительное обновление контента при скролле
-          document.querySelectorAll('[data-scroll]').forEach(el => {
-            const rect = el.getBoundingClientRect();
-            const isVisible = rect.top < window.innerHeight + 100 && rect.bottom > -100;
-            
-            if (isVisible && el.style.contentVisibility === 'auto') {
-              // Элемент видим - рендерим
-              el.style.willChange = 'contents';
-            }
-          });
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
+    // Оптимизация: предзагрузка элементов которые скоро станут видимыми
+    const optimizeVisibleElements = () => {
+      const elements = document.querySelectorAll('[data-scroll]');
+      elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight + 300 && rect.bottom > -300;
+        
+        // Добавляем GPU ускорение для видимых элементов
+        if (isVisible) {
+          el.style.transform = 'translateZ(0)';
+          el.style.webkitTransform = 'translateZ(0)';
+        }
+      });
+    };
     
-    // Throttled scroll listener
-    const throttledScroll = throttleLocal(smoothScroll, 100);
-    window.addEventListener('scroll', throttledScroll, { passive: true });
+    // Запускаем оптимизацию при скролле (throttled)
+    const throttledOptimize = throttleLocal(optimizeVisibleElements, 150);
+    window.addEventListener('scroll', throttledOptimize, { passive: true });
+    
+    // Запускаем сразу
+    optimizeVisibleElements();
   }
   
   // Запускаем оптимизацию
