@@ -139,6 +139,7 @@
 
 .mylink a:hover {
   color: #FC037F !important;
+  font-weight: 600 !important;
 }
 
 /* ===========================================
