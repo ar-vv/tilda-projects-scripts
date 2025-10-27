@@ -549,3 +549,156 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// ===========================================
+// COOKIE СОГЛАСИЕ
+// ===========================================
+(function() {
+  'use strict';
+
+  // Стандартный ключ для хранения согласия (GDPR compliant)
+  const COOKIE_CONSENT_KEY = 'cookie_consent';
+  const COOKIE_CONSENT_VERSION = '1.0';
+
+  // Создаем HTML структуру cookie-баннера
+  function createCookieBanner() {
+    const banner = document.createElement('div');
+    banner.className = 'cookie-consent-banner';
+    banner.id = 'cookieConsentBanner';
+    
+    banner.innerHTML = `
+      <div class="cookie-consent-wrapper">
+        <div class="cookie-consent-text">
+          Мы используем файлы cookie и другие технологии для улучшения работы сайта, аналитики и персонализации контента. 
+          Продолжая использовать наш сайт, вы даете согласие на использование файлов cookie в соответствии с нашей 
+          <a href="/privacy-policy" target="_blank">Политикой конфиденциальности</a>.
+        </div>
+        <div class="cookie-consent-buttons">
+          <button class="cookie-consent-btn cookie-consent-btn-accept" id="acceptCookies">Принять</button>
+          <button class="cookie-consent-btn cookie-consent-btn-decline" id="declineCookies">Отклонить</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(banner);
+    
+    return banner;
+  }
+
+  // Проверяем, дал ли пользователь согласие
+  function hasConsent() {
+    // Проверяем localStorage (для браузера)
+    const storedConsent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    
+    // Проверяем cookie (для совместимости с другими приложениями)
+    const cookieConsent = getCookie(COOKIE_CONSENT_KEY);
+    
+    // Если найдено согласие в localStorage или cookie, вернуть true
+    if (storedConsent === 'accepted' || cookieConsent === 'accepted') {
+      return true;
+    }
+    
+    return false;
+  }
+
+  // Получаем cookie
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(';').shift();
+    }
+    return null;
+  }
+
+  // Устанавливаем cookie
+  function setCookie(name, value, days = 365) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  }
+
+  // Сохраняем согласие
+  function saveConsent(accepted) {
+    const consentValue = accepted ? 'accepted' : 'declined';
+    const consentData = {
+      status: consentValue,
+      version: COOKIE_CONSENT_VERSION,
+      timestamp: new Date().toISOString()
+    };
+
+    // Сохраняем в localStorage
+    localStorage.setItem(COOKIE_CONSENT_KEY, consentValue);
+    
+    // Сохраняем в cookie для совместимости
+    setCookie(COOKIE_CONSENT_KEY, consentValue, 365);
+    setCookie(`${COOKIE_CONSENT_KEY}_data`, JSON.stringify(consentData), 365);
+    
+    // Запускаем событие для других скриптов
+    window.dispatchEvent(new CustomEvent('cookieConsentChanged', {
+      detail: { accepted: accepted }
+    }));
+    
+    console.log('Cookie consent saved:', consentData);
+  }
+
+  // Показываем баннер
+  function showBanner() {
+    const banner = createCookieBanner();
+    
+    // Добавляем класс для анимации
+    setTimeout(() => {
+      banner.classList.add('show');
+    }, 100);
+    
+    // Обработчики кнопок
+    const acceptBtn = document.getElementById('acceptCookies');
+    const declineBtn = document.getElementById('declineCookies');
+    
+    acceptBtn.addEventListener('click', function() {
+      saveConsent(true);
+      hideBanner();
+    });
+    
+    declineBtn.addEventListener('click', function() {
+      saveConsent(false);
+      hideBanner();
+    });
+  }
+
+  // Скрываем баннер
+  function hideBanner() {
+    const banner = document.getElementById('cookieConsentBanner');
+    if (banner) {
+      banner.style.opacity = '0';
+      banner.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+      banner.style.transform = 'translateY(100%)';
+      
+      setTimeout(() => {
+        if (banner.parentNode) {
+          banner.parentNode.removeChild(banner);
+        }
+      }, 300);
+    }
+  }
+
+  // Инициализация
+  function init() {
+    // Проверяем, нужно ли показывать баннер
+    if (!hasConsent()) {
+      // Небольшая задержка для UX
+      setTimeout(() => {
+        showBanner();
+      }, 1000);
+    } else {
+      console.log('Cookie consent already given');
+    }
+  }
+
+  // Запускаем при загрузке страницы
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
