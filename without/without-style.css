@@ -83,6 +83,129 @@
 }
 
 /* ===========================================
+   СТИЛИ ДЛЯ MENU-BACK
+   =========================================== */
+/* По умолчанию menu-back скрыт */
+.menu-back {
+    display: none !important;
+    opacity: 0;
+}
+
+/* Показываем menu-back когда бургер открыт с анимацией прозрачности */
+.burger-open .menu-back,
+.burger-open ~ .menu-back,
+* .burger-open .menu-back {
+    display: block !important;
+    opacity: 1;
+    transition: opacity 0.1s ease-in;
+}
+
+/* Скрываем при закрытии бургера */
+.menu-back {
+    transition: opacity 0.1s ease-out;
+}
+
+/* ===========================================
+   СТИЛИ ДЛЯ MYLINK
+   =========================================== */
+/* На десктопе mylink всегда видим */
+@media (min-width: 1281px) {
+    .mylink {
+        display: block !important;
+    }
+}
+
+/* На мобильных устройствах mylink скрыт до открытия бургера */
+@media (max-width: 1280px) {
+    .mylink {
+        display: none !important;
+        opacity: 0;
+    }
+    
+    /* Показываем mylink когда бургер открыт с анимацией fade in */
+    .burger-open .mylink,
+    .burger-open ~ .mylink,
+    * .burger-open .mylink {
+        display: block !important;
+        animation: fadeInUp 0.3s ease-out forwards;
+    }
+    
+    /* Анимация появления снизу с задержками для каждого элемента */
+    /* Начинаем с задержки 0.1s после появления menu-back */
+    .burger-open .mylink:nth-of-type(1),
+    .burger-open ~ .mylink:nth-of-type(1),
+    * .burger-open .mylink:nth-of-type(1) {
+        animation-delay: 0.2s;
+    }
+    
+    .burger-open .mylink:nth-of-type(2),
+    .burger-open ~ .mylink:nth-of-type(2),
+    * .burger-open .mylink:nth-of-type(2) {
+        animation-delay: 0.25s;
+    }
+    
+    .burger-open .mylink:nth-of-type(3),
+    .burger-open ~ .mylink:nth-of-type(3),
+    * .burger-open .mylink:nth-of-type(3) {
+        animation-delay: 0.3s;
+    }
+    
+    .burger-open .mylink:nth-of-type(4),
+    .burger-open ~ .mylink:nth-of-type(4),
+    * .burger-open .mylink:nth-of-type(4) {
+        animation-delay: 0.35s;
+    }
+    
+    .burger-open .mylink:nth-of-type(5),
+    .burger-open ~ .mylink:nth-of-type(5),
+    * .burger-open .mylink:nth-of-type(5) {
+        animation-delay: 0.4s;
+    }
+    
+    .burger-open .mylink:nth-of-type(6),
+    .burger-open ~ .mylink:nth-of-type(6),
+    * .burger-open .mylink:nth-of-type(6) {
+        animation-delay: 0.45s;
+    }
+    
+    .burger-open .mylink:nth-of-type(7),
+    .burger-open ~ .mylink:nth-of-type(7),
+    * .burger-open .mylink:nth-of-type(7) {
+        animation-delay: 0.5s;
+    }
+    
+    .burger-open .mylink:nth-of-type(8),
+    .burger-open ~ .mylink:nth-of-type(8),
+    * .burger-open .mylink:nth-of-type(8) {
+        animation-delay: 0.55s;
+    }
+    
+    .burger-open .mylink:nth-of-type(9),
+    .burger-open ~ .mylink:nth-of-type(9),
+    * .burger-open .mylink:nth-of-type(9) {
+        animation-delay: 0.6s;
+    }
+    
+    .burger-open .mylink:nth-of-type(10),
+    .burger-open ~ .mylink:nth-of-type(10),
+    * .burger-open .mylink:nth-of-type(10) {
+        animation-delay: 0.65s;
+    }
+}
+
+/* Анимация fade in снизу */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================================
    СТИЛИ ДЛЯ ЛИНИЙ С АНИМАЦИЕЙ
    =========================================== */
 

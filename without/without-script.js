@@ -533,11 +533,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const savedState = localStorage.getItem('burgerButtonState_' + containerId);
             if (savedState === 'active') {
                 burgerButton.classList.add('active');
+                // Восстанавливаем класс burger-open при загрузке страницы
+                container.classList.add('burger-open');
+                container.parentElement && container.parentElement.classList.add('burger-open');
             }
 
             // Добавляем обработчик клика
             burgerButton.addEventListener('click', function() {
                 this.classList.toggle('active');
+                
+                // Добавляем/удаляем класс к родительскому контейнеру
+                const container = this.closest('.burger');
+                if (container) {
+                    if (this.classList.contains('active')) {
+                        container.classList.add('burger-open');
+                        container.parentElement && container.parentElement.classList.add('burger-open');
+                    } else {
+                        container.classList.remove('burger-open');
+                        container.parentElement && container.parentElement.classList.remove('burger-open');
+                    }
+                }
                 
                 // Сохраняем состояние
                 if (this.classList.contains('active')) {
