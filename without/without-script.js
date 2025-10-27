@@ -11,6 +11,26 @@
 (function () {
   let initialized = false;
   
+  // Throttle функция для оптимизации обработки скролла
+  function throttle(func, delay) {
+    let timeoutId;
+    let lastExecTime = 0;
+    return function (...args) {
+      const currentTime = Date.now();
+      
+      if (currentTime - lastExecTime > delay) {
+        func.apply(this, args);
+        lastExecTime = currentTime;
+      } else {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          func.apply(this, args);
+          lastExecTime = Date.now();
+        }, delay - (currentTime - lastExecTime));
+      }
+    };
+  }
+
   // Инициализация точек навигации
   function initDots() {
     document.querySelectorAll('.bar').forEach(bar => {
@@ -27,11 +47,24 @@
         host.appendChild(dot);
       }
       
-      // Добавляем отслеживание скрола для этого слайдера
+      // Добавляем отслеживание скрола для этого слайдера с оптимизацией
       const slider = getSliderFor(bar);
       if (slider) {
         updateDotsForSlider(slider, bar);
-        slider.addEventListener('scroll', () => updateDotsForSlider(slider, bar));
+        // Используем requestAnimationFrame для плавного обновления
+        let ticking = false;
+        const optimisedUpdate = () => {
+          if (!ticking) {
+            requestAnimationFrame(() => {
+              updateDotsForSlider(slider, bar);
+              ticking = false;
+            });
+            ticking = true;
+          }
+        };
+        // Добавляем throttled обработчик
+        const throttledUpdate = throttle(optimisedUpdate, 16);
+        slider.addEventListener('scroll', throttledUpdate, { passive: true });
       }
     });
   }
@@ -216,8 +249,12 @@
     // Обновляем при загрузке
     updateSliderWidths();
     
-    // Обновляем при изменении размера окна
-    window.addEventListener('resize', updateSliderWidths, { passive: true });
+    // Обновляем при изменении размера окна с throttling
+    const throttledResize = throttle(() => {
+      requestAnimationFrame(updateSliderWidths);
+    }, 100);
+    
+    window.addEventListener('resize', throttledResize, { passive: true });
   }
 
   // Запуск при загрузке страницы
@@ -363,22 +400,29 @@ atom.style.background='transparent';
 atom.style.opacity='0';
 }
 
-// Добавляем отслеживание изменений borderRadius у tn-atom
+// Добавляем отслеживание изменений borderRadius у tn-atom с оптимизацией
 if(atom){
+var debounceTimeout;
 var observer=new MutationObserver(function(mutations){
-mutations.forEach(function(mutation){
-if(mutation.type==='attributes'&&(mutation.attributeName==='style'||mutation.attributeName==='class')){
-var newBr=getComputedStyle(atom).borderRadius||'24px';
-el.style.borderRadius=newBr;
-el.style.webkitBorderRadius=newBr;
-layer.style.borderRadius=newBr;
-layer.style.webkitBorderRadius=newBr;
-border.style.borderRadius=newBr;
-border.style.webkitBorderRadius=newBr;
-shadow.style.borderRadius=newBr;
-shadow.style.webkitBorderRadius=newBr;
-}
-});
+// Debounce для уменьшения частоты обновлений
+clearTimeout(debounceTimeout);
+debounceTimeout=setTimeout(function(){
+  requestAnimationFrame(function(){
+    mutations.forEach(function(mutation){
+      if(mutation.type==='attributes'&&(mutation.attributeName==='style'||mutation.attributeName==='class')){
+        var newBr=getComputedStyle(atom).borderRadius||'24px';
+        el.style.borderRadius=newBr;
+        el.style.webkitBorderRadius=newBr;
+        layer.style.borderRadius=newBr;
+        layer.style.webkitBorderRadius=newBr;
+        border.style.borderRadius=newBr;
+        border.style.webkitBorderRadius=newBr;
+        shadow.style.borderRadius=newBr;
+        shadow.style.webkitBorderRadius=newBr;
+      }
+    });
+  });
+}, 50);
 });
 observer.observe(atom,{attributes:true,attributeFilter:['style','class']});
 }
@@ -409,9 +453,12 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!source || !target) return;
 
     const observer = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        target.style.width = entry.contentRect.width + "px";
-      }
+      // Используем requestAnimationFrame для оптимизации
+      requestAnimationFrame(() => {
+        for (let entry of entries) {
+          target.style.width = entry.contentRect.width + "px";
+        }
+      });
     });
 
     observer.observe(source);
@@ -572,38 +619,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 openMenu(container);
             }
 
-            // Добавляем обработчик клика
+            // Оптимизированный обработчик клика с requestAnimationFrame
+            let isAnimating = false;
             burgerButton.addEventListener('click', function() {
-                this.classList.toggle('active');
+                if (isAnimating) return;
+                isAnimating = true;
                 
-                if (this.classList.contains('active')) {
-                    openMenu(container);
-                    localStorage.setItem('burgerButtonState_' + containerId, 'active');
-                } else {
-                    closeMenu(container);
-                    localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
-                }
-            });
+                requestAnimationFrame(() => {
+                    this.classList.toggle('active');
+                    
+                    if (this.classList.contains('active')) {
+                        openMenu(container);
+                        localStorage.setItem('burgerButtonState_' + containerId, 'active');
+                    } else {
+                        closeMenu(container);
+                        localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
+                    }
+                    
+                    setTimeout(() => { isAnimating = false; }, 100);
+                });
+            }, { passive: true });
         }
     });
     
-    // Обработчик клика по ссылкам в mylink - закрываем меню и переходим по ссылке
+    // Оптимизированный обработчик клика по ссылкам в mylink
+    let clickTimeout;
     document.addEventListener('click', function(e) {
         const mylinkElement = e.target.closest('.mylink');
         if (mylinkElement) {
             const link = mylinkElement.querySelector('a');
             if (link && link.href && !link.href.includes('javascript:')) {
-                // Закрываем все меню
+                // Закрываем все меню немедленно для лучшей производительности
                 closeAllMenus();
                 
-                // Переходим по ссылке
+                // Переходим по ссылке с минимальной задержкой
                 e.preventDefault();
-                setTimeout(() => {
+                clearTimeout(clickTimeout);
+                clickTimeout = setTimeout(() => {
                     window.location.href = link.href;
-                }, 100);
+                }, 50);
             }
         }
-    });
+    }, { passive: false });
 });
 
 // ===========================================

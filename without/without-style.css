@@ -36,6 +36,22 @@
 .myblur {
   animation: blur-circle-move 8s ease-in-out infinite !important;
   will-change: transform, filter !important;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Оптимизация для мобильных устройств */
+@media (max-width: 768px) {
+  .myblur {
+    animation-duration: 12s !important;
+    will-change: auto !important;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .myblur {
+      animation: none !important;
+    }
+  }
 }
 
 /* ===========================================
@@ -137,67 +153,81 @@ body.burger-menu-open {
         animation: fadeInUp 0.3s ease-out forwards;
     }
     
-    /* Анимация появления снизу с задержками для каждого элемента */
-    /* Без задержки после появления menu-back - кнопки появляются сразу */
-    .burger-open .mylink:nth-of-type(1),
-    .burger-open ~ .mylink:nth-of-type(1),
-    * .burger-open .mylink:nth-of-type(1) {
-        animation-delay: 0s;
+/* Оптимизированная анимация появления снизу */
+.burger-open .mylink {
+    will-change: transform, opacity;
+}
+
+.burger-open .mylink:nth-of-type(1),
+.burger-open ~ .mylink:nth-of-type(1),
+* .burger-open .mylink:nth-of-type(1) {
+    animation-delay: 0s;
+}
+
+.burger-open .mylink:nth-of-type(2),
+.burger-open ~ .mylink:nth-of-type(2),
+* .burger-open .mylink:nth-of-type(2) {
+    animation-delay: 0.05s;
+}
+
+.burger-open .mylink:nth-of-type(3),
+.burger-open ~ .mylink:nth-of-type(3),
+* .burger-open .mylink:nth-of-type(3) {
+    animation-delay: 0.1s;
+}
+
+.burger-open .mylink:nth-of-type(4),
+.burger-open ~ .mylink:nth-of-type(4),
+* .burger-open .mylink:nth-of-type(4) {
+    animation-delay: 0.15s;
+}
+
+.burger-open .mylink:nth-of-type(5),
+.burger-open ~ .mylink:nth-of-type(5),
+* .burger-open .mylink:nth-of-type(5) {
+    animation-delay: 0.2s;
+}
+
+.burger-open .mylink:nth-of-type(6),
+.burger-open ~ .mylink:nth-of-type(6),
+* .burger-open .mylink:nth-of-type(6) {
+    animation-delay: 0.25s;
+}
+
+.burger-open .mylink:nth-of-type(7),
+.burger-open ~ .mylink:nth-of-type(7),
+* .burger-open .mylink:nth-of-type(7) {
+    animation-delay: 0.3s;
+}
+
+.burger-open .mylink:nth-of-type(8),
+.burger-open ~ .mylink:nth-of-type(8),
+* .burger-open .mylink:nth-of-type(8) {
+    animation-delay: 0.35s;
+}
+
+.burger-open .mylink:nth-of-type(9),
+.burger-open ~ .mylink:nth-of-type(9),
+* .burger-open .mylink:nth-of-type(9) {
+    animation-delay: 0.4s;
+}
+
+.burger-open .mylink:nth-of-type(10),
+.burger-open ~ .mylink:nth-of-type(10),
+* .burger-open .mylink:nth-of-type(10) {
+    animation-delay: 0.45s;
+}
+
+/* Оптимизация для мобильных - убираем задержки */
+@media (max-width: 768px) {
+    .burger-open .mylink {
+        will-change: auto !important;
     }
     
-    .burger-open .mylink:nth-of-type(2),
-    .burger-open ~ .mylink:nth-of-type(2),
-    * .burger-open .mylink:nth-of-type(2) {
-        animation-delay: 0.05s;
+    .burger-open .mylink:nth-of-type(n) {
+        animation-delay: 0s !important;
     }
-    
-    .burger-open .mylink:nth-of-type(3),
-    .burger-open ~ .mylink:nth-of-type(3),
-    * .burger-open .mylink:nth-of-type(3) {
-        animation-delay: 0.1s;
-    }
-    
-    .burger-open .mylink:nth-of-type(4),
-    .burger-open ~ .mylink:nth-of-type(4),
-    * .burger-open .mylink:nth-of-type(4) {
-        animation-delay: 0.15s;
-    }
-    
-    .burger-open .mylink:nth-of-type(5),
-    .burger-open ~ .mylink:nth-of-type(5),
-    * .burger-open .mylink:nth-of-type(5) {
-        animation-delay: 0.2s;
-    }
-    
-    .burger-open .mylink:nth-of-type(6),
-    .burger-open ~ .mylink:nth-of-type(6),
-    * .burger-open .mylink:nth-of-type(6) {
-        animation-delay: 0.25s;
-    }
-    
-    .burger-open .mylink:nth-of-type(7),
-    .burger-open ~ .mylink:nth-of-type(7),
-    * .burger-open .mylink:nth-of-type(7) {
-        animation-delay: 0.3s;
-    }
-    
-    .burger-open .mylink:nth-of-type(8),
-    .burger-open ~ .mylink:nth-of-type(8),
-    * .burger-open .mylink:nth-of-type(8) {
-        animation-delay: 0.35s;
-    }
-    
-    .burger-open .mylink:nth-of-type(9),
-    .burger-open ~ .mylink:nth-of-type(9),
-    * .burger-open .mylink:nth-of-type(9) {
-        animation-delay: 0.4s;
-    }
-    
-    .burger-open .mylink:nth-of-type(10),
-    .burger-open ~ .mylink:nth-of-type(10),
-    * .burger-open .mylink:nth-of-type(10) {
-        animation-delay: 0.45s;
-    }
+}
 }
 
 /* Анимация fade in снизу */
@@ -231,13 +261,13 @@ body.burger-menu-open {
    =========================================== */
 /* Применяется к элементам с классами .my-glass и .slide */
 /* SVG фильтр создается динамически через JavaScript */
-.my-glass,.slide{overflow:hidden;isolation:isolate}
-.glass-layer{position:absolute;top:0;left:0;width:100%;height:100%;backdrop-filter:blur(8px) saturate(180%) contrast(110%);-webkit-backdrop-filter:blur(8px) saturate(180%) contrast(110%);background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.04));filter:url(#glass-distortion);-webkit-filter:url(#glass-distortion);pointer-events:none;z-index:1;will-change:contents}
+.my-glass,.slide{overflow:hidden;isolation:isolate;transform:translateZ(0);-webkit-transform:translateZ(0)}
+.glass-layer{position:absolute;top:0;left:0;width:100%;height:100%;backdrop-filter:blur(8px) saturate(180%) contrast(110%);-webkit-backdrop-filter:blur(8px) saturate(180%) contrast(110%);background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.04));filter:url(#glass-distortion);-webkit-filter:url(#glass-distortion);pointer-events:none;z-index:1}
 .glass-border{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;box-sizing:border-box;-webkit-box-sizing:border-box}
 .glass-shadow{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;box-sizing:border-box;-webkit-box-sizing:border-box}
 .my-glass>*:not(.glass-layer):not(.glass-border):not(.glass-shadow),.slide>*:not(.glass-layer):not(.glass-border):not(.glass-shadow){position:relative;z-index:3}
-@media (max-width:640px){.glass-layer{backdrop-filter:blur(6px) saturate(140%);-webkit-backdrop-filter:blur(6px) saturate(140%)}}
-@supports(-webkit-backdrop-filter:blur(1px)) and (not (backdrop-filter:blur(1px))){.glass-layer{backdrop-filter:blur(5px) saturate(140%);-webkit-backdrop-filter:blur(5px) saturate(140%);filter:none!important;-webkit-filter:none!important}}
+@media (max-width:640px){.glass-layer{backdrop-filter:blur(4px) saturate(120%);-webkit-backdrop-filter:blur(4px) saturate(120%)}}
+@supports(-webkit-backdrop-filter:blur(1px)) and (not (backdrop-filter:blur(1px))){.glass-layer{backdrop-filter:blur(3px) saturate(120%);-webkit-backdrop-filter:blur(3px) saturate(120%);filter:none!important;-webkit-filter:none!important}}
 
 /* ===========================================
    СТИЛИ ДЛЯ ТЕНЕЙ
@@ -271,8 +301,22 @@ body.burger-menu-open {
 }
 
 /* Эффект приподнятия при наведении */
+.mybutton a {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
 .mybutton a:hover {
-  transform: translateY(-3px) scale(1.02) !important;
+  transform: translateY(-3px) scale(1.02) translateZ(0) !important;
+  -webkit-transform: translateY(-3px) scale(1.02) translateZ(0) !important;
+}
+
+/* Оптимизация для мобильных - убираем hover эффект */
+@media (max-width: 768px) and (hover: none) {
+  .mybutton a:hover {
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+  }
 }
 
 /* ===========================================
@@ -325,6 +369,25 @@ body.burger-menu-open {
 /* Скрытие скроллбара в WebKit браузерах */
 .slider::-webkit-scrollbar {
   display: none !important;
+}
+
+/* Оптимизация скроллинга для мобильных устройств */
+@media (max-width: 768px) {
+  .slider {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+  }
+  
+  /* Уменьшаем blur для мобильных */
+  .myblur {
+    filter: blur(60px) !important;
+  }
+  
+  /* Упрощаем glass эффект на мобильных */
+  .glass-layer {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
 }
 
 /* ===========================================
@@ -391,7 +454,7 @@ div svg {
   svg {
     -webkit-transform: translateZ(0) !important;
     transform: translateZ(0) !important;
-    will-change: transform !important;
+    will-change: auto !important;
   }
 }
 
@@ -613,5 +676,63 @@ form button[type="submit"] {
 
   .cookie-consent-btn-accept::before {
     font-size: 16px;
+  }
+}
+
+/* ===========================================
+   ОБЩИЕ ОПТИМИЗАЦИИ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+   =========================================== */
+/* Оптимизация производительности для всех мобильных устройств */
+@media (max-width: 768px) {
+  /* Отключаем сложные эффекты на слабых устройствах */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Оптимизация для элементов с анимацией */
+  [class*="blur"],
+  [class*="glass"],
+  [class*="slide"] {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+  }
+  
+  /* Уменьшаем количество layers для мобильных */
+  .mybutton a,
+  .mylink a,
+  .burger-button {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Оптимизация для устройств Apple */
+@supports (-webkit-touch-callout: none) {
+  /* Аппаратное ускорение для Safari */
+  body {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-perspective: 1000;
+    perspective: 1000;
+  }
+  
+  /* Оптимизация скролла для Safari */
+  .slider,
+  .ticker {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Уменьшение нагрузки на GPU для слабых устройств */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
