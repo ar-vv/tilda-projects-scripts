@@ -427,11 +427,15 @@ form button[type="submit"] {
   left: 0;
   right: 0;
   width: 100%;
+  min-height: auto;
+  max-height: 100vh;
+  overflow-y: auto;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: #333;
   padding: 20px;
+  box-sizing: border-box;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   z-index: 10000;
   display: none;
@@ -458,6 +462,8 @@ form button[type="submit"] {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cookie-consent-text {
@@ -465,6 +471,8 @@ form button[type="submit"] {
   font-size: 14px;
   line-height: 1.5;
   color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .cookie-consent-text a {
@@ -491,10 +499,12 @@ form button[type="submit"] {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  white-space: nowrap;
+  white-space: normal;
+  word-wrap: break-word;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .cookie-consent-btn-accept {
@@ -539,6 +549,8 @@ form button[type="submit"] {
   .cookie-consent-banner {
     padding: 16px !important;
     box-sizing: border-box !important;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
   }
 
   .cookie-consent-wrapper {
@@ -548,7 +560,8 @@ form button[type="submit"] {
     width: 100%;
     padding: 0;
     margin: 0;
-    max-width: none;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .cookie-consent-text {
@@ -556,6 +569,8 @@ form button[type="submit"] {
     text-align: center;
     padding: 0;
     margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .cookie-consent-buttons {
@@ -564,12 +579,16 @@ form button[type="submit"] {
     gap: 8px;
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
   }
 
   .cookie-consent-btn {
     width: 100%;
+    min-width: 0;
     padding: 12px 16px !important;
     box-sizing: border-box !important;
+    white-space: normal;
+    word-wrap: break-word;
   }
 }
 
@@ -589,6 +608,7 @@ form button[type="submit"] {
   .cookie-consent-btn {
     font-size: 13px;
     padding: 12px 16px !important;
+    min-height: 44px;
   }
 
   .cookie-consent-btn-accept::before {
