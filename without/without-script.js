@@ -439,53 +439,6 @@ window.t_onReady(function(){setTimeout(init,200)});
 window.addEventListener('load',function(){setTimeout(init,300)});
 })();
 
-// ===========================================
-// КРИТИЧЕСКАЯ ОПТИМИЗАЦИЯ ДЛЯ СКРОЛЛА
-// ===========================================
-// Автоматическая оптимизация элементов для быстрого скролла
-(function() {
-  'use strict';
-  
-  // Локальная throttle функция для оптимизации скролла
-  function throttleLocal(func, delay) {
-    let timeoutId;
-    let lastExecTime = 0;
-    return function (...args) {
-      const currentTime = Date.now();
-      
-      if (currentTime - lastExecTime > delay) {
-        func.apply(this, args);
-        lastExecTime = currentTime;
-      } else {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          func.apply(this, args);
-          lastExecTime = Date.now();
-        }, delay - (currentTime - lastExecTime));
-      }
-    };
-  }
-  
-  // Простая оптимизация: ленивая загрузка изображений
-  function optimizeScrollPerformance() {
-    // Устанавливаем loading="lazy" для всех изображений
-    document.querySelectorAll('img:not([loading])').forEach(img => {
-      img.loading = 'lazy';
-    });
-  }
-  
-  // Запускаем оптимизацию
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', optimizeScrollPerformance);
-  } else {
-    optimizeScrollPerformance();
-  }
-  
-  // Запускаем также после полной загрузки для динамических элементов
-  window.addEventListener('load', () => {
-    setTimeout(optimizeScrollPerformance, 100);
-  });
-})();
 
 // ===========================================
 // СИНХРОНИЗАЦИЯ ШИРИНЫ ТИКЕРА И СЛАЙДЕРА
