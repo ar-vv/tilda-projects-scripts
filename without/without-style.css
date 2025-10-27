@@ -392,56 +392,58 @@ form button[type="submit"] {
 /* Мобильная версия */
 @media (max-width: 768px) {
   .cookie-consent-banner {
-    padding: 16px;
+    padding: 16px !important;
+    box-sizing: border-box !important;
   }
 
   .cookie-consent-wrapper {
     flex-direction: column;
     align-items: stretch;
-    gap: 16px;
-    max-width: calc(100% - 16px);
+    gap: 12px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    max-width: none;
   }
 
   .cookie-consent-text {
     font-size: 13px;
     text-align: center;
+    padding: 0;
+    margin: 0;
   }
 
   .cookie-consent-buttons {
     flex-direction: column;
     width: 100%;
     gap: 8px;
-    padding: 0 16px;
-    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
   }
 
   .cookie-consent-btn {
     width: 100%;
-    padding: 14px 24px;
+    padding: 12px 16px !important;
+    box-sizing: border-box !important;
   }
 }
 
 @media (max-width: 480px) {
   .cookie-consent-banner {
-    padding: 14px 16px;
+    padding: 16px !important;
   }
 
   .cookie-consent-wrapper {
-    max-width: calc(100% - 16px);
+    gap: 10px;
   }
 
   .cookie-consent-text {
     font-size: 12px;
   }
 
-  .cookie-consent-buttons {
-    padding: 0 16px;
-    box-sizing: border-box;
-  }
-
   .cookie-consent-btn {
     font-size: 13px;
-    padding: 12px 20px;
+    padding: 12px 16px !important;
   }
 
   .cookie-consent-btn-accept::before {
