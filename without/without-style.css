@@ -95,7 +95,7 @@
 .burger-open .menu-back,
 .burger-open ~ .menu-back,
 * .burger-open .menu-back {
-    display: block !important;
+    display: table !important;
     opacity: 1;
     transition: opacity 0.1s ease-in;
 }
