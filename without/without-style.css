@@ -588,7 +588,7 @@ form button[type="submit"] {
   content: "✓ ";
   font-size: 18px;
   margin-right: 4px;
-  font-family: 'monospace';
+  font-family: monospace;
 }
 
 .cookie-consent-btn-decline {
