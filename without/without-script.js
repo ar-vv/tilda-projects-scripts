@@ -439,6 +439,62 @@ window.t_onReady(function(){setTimeout(init,200)});
 window.addEventListener('load',function(){setTimeout(init,300)});
 })();
 
+// ===========================================
+// СМЕНА ТЕКСТА В .changing-title (fade, 1с)
+// ===========================================
+(function () {
+  'use strict';
+
+  function initChangingTitle(root) {
+    if (!root || root.dataset.ctInit === '1') return;
+    root.dataset.ctInit = '1';
+
+    var inner = root.querySelector('.tn-atom') || root.querySelector('div') || root;
+    var firstP = inner && inner.querySelector('p');
+    if (!firstP) return;
+
+    var texts = ['удобно', 'легко', 'надёжно', 'хочется'];
+    texts.forEach(function (t) {
+      var p = firstP.cloneNode(true);
+      p.textContent = t;
+      inner.appendChild(p);
+    });
+
+    var items = Array.prototype.slice.call(inner.querySelectorAll('p'));
+    if (!items.length) return;
+
+    items.forEach(function (el) {
+      el.classList.remove('active');
+      el.setAttribute('aria-hidden', 'true');
+    });
+
+    var index = 0;
+    items[index].classList.add('active');
+    items[index].setAttribute('aria-hidden', 'false');
+
+    setInterval(function () {
+      var prev = index;
+      index = (index + 1) % items.length;
+      items[prev].classList.remove('active');
+      items[prev].setAttribute('aria-hidden', 'true');
+      items[index].classList.add('active');
+      items[index].setAttribute('aria-hidden', 'false');
+    }, 1000);
+  }
+
+  function run() {
+    var blocks = document.querySelectorAll('.changing-title');
+    if (!blocks || !blocks.length) return;
+    blocks.forEach(initChangingTitle);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
+
 
 // ===========================================
 // СИНХРОНИЗАЦИЯ ШИРИНЫ ТИКЕРА И СЛАЙДЕРА
