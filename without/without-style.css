@@ -736,3 +736,10 @@ img {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===========================================
+   ШРИФТ ДЛЯ .t-form-success-popup .t-descr
+   =========================================== */
+.t-form-success-popup .t-descr {
+  font-family: "NeueMontreal" !important;
+}
