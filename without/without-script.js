@@ -552,22 +552,28 @@ syncWidth(sliderWidth, slider);
 document.addEventListener('DOMContentLoaded', function() {
     // Функция для открытия меню
     function openMenu(container) {
+        // Мгновенное применение классов без задержек
         container.classList.add('burger-open');
         if (container.parentElement) {
             container.parentElement.classList.add('burger-open');
         }
         // Блокируем скролл
         document.body.classList.add('burger-menu-open');
+        // Принудительный reflow для немедленного отображения изменений
+        void container.offsetHeight;
     }
     
     // Функция для закрытия меню
     function closeMenu(container) {
+        // Мгновенное удаление классов
         container.classList.remove('burger-open');
         if (container.parentElement) {
             container.parentElement.classList.remove('burger-open');
         }
         // Разблокируем скролл
         document.body.classList.remove('burger-menu-open');
+        // Принудительный reflow для немедленного отображения изменений
+        void container.offsetHeight;
     }
     
     // Функция для закрытия всех меню
@@ -620,26 +626,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 openMenu(container);
             }
 
-            // Оптимизированный обработчик клика с requestAnimationFrame
-            let isAnimating = false;
-            burgerButton.addEventListener('click', function() {
-                if (isAnimating) return;
-                isAnimating = true;
+            // Оптимизированный обработчик клика для мгновенной реакции на мобильных
+            burgerButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 
-                requestAnimationFrame(() => {
-                    this.classList.toggle('active');
-                    
-                    if (this.classList.contains('active')) {
-                        openMenu(container);
-                        localStorage.setItem('burgerButtonState_' + containerId, 'active');
-                    } else {
-                        closeMenu(container);
-                        localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
-                    }
-                    
-                    setTimeout(() => { isAnimating = false; }, 100);
-                });
-            }, { passive: true });
+                // Мгновенное переключение без задержек
+                const isActive = this.classList.contains('active');
+                this.classList.toggle('active');
+                
+                // Мгновенное обновление состояния меню
+                if (!isActive) {
+                    openMenu(container);
+                    localStorage.setItem('burgerButtonState_' + containerId, 'active');
+                } else {
+                    closeMenu(container);
+                    localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
+                }
+            }, { passive: false });
         }
     });
     
