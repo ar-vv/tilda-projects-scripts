@@ -626,24 +626,47 @@ document.addEventListener('DOMContentLoaded', function() {
                 openMenu(container);
             }
 
-            // Оптимизированный обработчик клика для мгновенной реакции на мобильных
+            // Максимально оптимизированный обработчик для мгновенной реакции
             burgerButton.addEventListener('click', function(e) {
+                // Предотвращаем стандартное поведение немедленно
                 e.preventDefault();
-                e.stopPropagation();
+                e.stopImmediatePropagation();
                 
-                // Мгновенное переключение без задержек
+                // Мгновенное переключение состояния кнопки
                 const isActive = this.classList.contains('active');
-                this.classList.toggle('active');
+                if (isActive) {
+                    this.classList.remove('active');
+                } else {
+                    this.classList.add('active');
+                }
                 
-                // Мгновенное обновление состояния меню
+                // Мгновенное обновление состояния меню БЕЗ localStorage (он блокирует поток)
                 if (!isActive) {
                     openMenu(container);
-                    localStorage.setItem('burgerButtonState_' + containerId, 'active');
+                    // localStorage - асинхронно, не блокирует основной поток
+                    if (window.requestIdleCallback) {
+                        requestIdleCallback(() => {
+                            localStorage.setItem('burgerButtonState_' + containerId, 'active');
+                        }, { timeout: 1000 });
+                    } else {
+                        setTimeout(() => {
+                            localStorage.setItem('burgerButtonState_' + containerId, 'active');
+                        }, 0);
+                    }
                 } else {
                     closeMenu(container);
-                    localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
+                    // localStorage - асинхронно
+                    if (window.requestIdleCallback) {
+                        requestIdleCallback(() => {
+                            localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
+                        }, { timeout: 1000 });
+                    } else {
+                        setTimeout(() => {
+                            localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
+                        }, 0);
+                    }
                 }
-            }, { passive: false });
+            }, { passive: false, capture: true });
         }
     });
     

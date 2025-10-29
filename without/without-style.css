@@ -81,6 +81,10 @@ body.burger-menu-open {
     cursor: pointer;
     padding: 0;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .burger-button span {
@@ -89,11 +93,13 @@ body.burger-menu-open {
     height: 17%;
     background-color: #333;
     border-radius: 50px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s linear;
     transform-origin: center;
     will-change: transform, opacity;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 /* Анимация превращения в крестик */
@@ -117,20 +123,21 @@ body.burger-menu-open {
 .menu-back {
     display: none !important;
     opacity: 0;
+    visibility: hidden;
 }
 
 /* Показываем menu-back когда бургер открыт с анимацией прозрачности */
 .burger-open .menu-back,
-.burger-open ~ .menu-back,
-* .burger-open .menu-back {
+.burger-open ~ .menu-back {
     display: table !important;
     opacity: 1;
-    transition: opacity 0.15s ease-in;
+    visibility: visible !important;
+    transition: opacity 0.1s ease-in;
 }
 
 /* Скрываем при закрытии бургера */
 .menu-back {
-    transition: opacity 0.15s ease-out;
+    transition: opacity 0.1s ease-out;
 }
 
 /* ===========================================
@@ -152,88 +159,78 @@ body.burger-menu-open {
     
     /* Показываем mylink когда бургер открыт с анимацией fade in */
     .burger-open .mylink,
-    .burger-open ~ .mylink,
-    * .burger-open .mylink {
+    .burger-open ~ .mylink {
         display: block !important;
-        animation: fadeInUp 0.2s ease-out forwards;
+        visibility: visible !important;
+        animation: fadeInUp 0.15s ease-out forwards;
     }
     
-/* Оптимизированная анимация появления снизу */
-.burger-open .mylink {
-    will-change: transform, opacity;
-}
-
-.burger-open .mylink:nth-of-type(1),
-.burger-open ~ .mylink:nth-of-type(1),
-* .burger-open .mylink:nth-of-type(1) {
-    animation-delay: 0s;
-}
-
-.burger-open .mylink:nth-of-type(2),
-.burger-open ~ .mylink:nth-of-type(2),
-* .burger-open .mylink:nth-of-type(2) {
-    animation-delay: 0.05s;
-}
-
-.burger-open .mylink:nth-of-type(3),
-.burger-open ~ .mylink:nth-of-type(3),
-* .burger-open .mylink:nth-of-type(3) {
-    animation-delay: 0.1s;
-}
-
-.burger-open .mylink:nth-of-type(4),
-.burger-open ~ .mylink:nth-of-type(4),
-* .burger-open .mylink:nth-of-type(4) {
-    animation-delay: 0.15s;
-}
-
-.burger-open .mylink:nth-of-type(5),
-.burger-open ~ .mylink:nth-of-type(5),
-* .burger-open .mylink:nth-of-type(5) {
-    animation-delay: 0.2s;
-}
-
-.burger-open .mylink:nth-of-type(6),
-.burger-open ~ .mylink:nth-of-type(6),
-* .burger-open .mylink:nth-of-type(6) {
-    animation-delay: 0.25s;
-}
-
-.burger-open .mylink:nth-of-type(7),
-.burger-open ~ .mylink:nth-of-type(7),
-* .burger-open .mylink:nth-of-type(7) {
-    animation-delay: 0.3s;
-}
-
-.burger-open .mylink:nth-of-type(8),
-.burger-open ~ .mylink:nth-of-type(8),
-* .burger-open .mylink:nth-of-type(8) {
-    animation-delay: 0.35s;
-}
-
-.burger-open .mylink:nth-of-type(9),
-.burger-open ~ .mylink:nth-of-type(9),
-* .burger-open .mylink:nth-of-type(9) {
-    animation-delay: 0.4s;
-}
-
-.burger-open .mylink:nth-of-type(10),
-.burger-open ~ .mylink:nth-of-type(10),
-* .burger-open .mylink:nth-of-type(10) {
-    animation-delay: 0.45s;
-}
-
-/* Оптимизация для мобильных - убираем задержки и ускоряем анимацию */
-@media (max-width: 768px) {
+    /* Оптимизированная анимация появления снизу */
     .burger-open .mylink {
-        will-change: transform, opacity !important;
+        will-change: transform, opacity;
     }
-    
-    .burger-open .mylink:nth-of-type(n) {
-        animation-delay: 0s !important;
-        animation-duration: 0.15s !important;
+
+    .burger-open .mylink:nth-of-type(1),
+    .burger-open ~ .mylink:nth-of-type(1) {
+        animation-delay: 0s;
     }
-}
+
+    .burger-open .mylink:nth-of-type(2),
+    .burger-open ~ .mylink:nth-of-type(2) {
+        animation-delay: 0.02s;
+    }
+
+    .burger-open .mylink:nth-of-type(3),
+    .burger-open ~ .mylink:nth-of-type(3) {
+        animation-delay: 0.04s;
+    }
+
+    .burger-open .mylink:nth-of-type(4),
+    .burger-open ~ .mylink:nth-of-type(4) {
+        animation-delay: 0.06s;
+    }
+
+    .burger-open .mylink:nth-of-type(5),
+    .burger-open ~ .mylink:nth-of-type(5) {
+        animation-delay: 0.08s;
+    }
+
+    .burger-open .mylink:nth-of-type(6),
+    .burger-open ~ .mylink:nth-of-type(6) {
+        animation-delay: 0.1s;
+    }
+
+    .burger-open .mylink:nth-of-type(7),
+    .burger-open ~ .mylink:nth-of-type(7) {
+        animation-delay: 0.12s;
+    }
+
+    .burger-open .mylink:nth-of-type(8),
+    .burger-open ~ .mylink:nth-of-type(8) {
+        animation-delay: 0.14s;
+    }
+
+    .burger-open .mylink:nth-of-type(9),
+    .burger-open ~ .mylink:nth-of-type(9) {
+        animation-delay: 0.16s;
+    }
+
+    .burger-open .mylink:nth-of-type(10),
+    .burger-open ~ .mylink:nth-of-type(10) {
+        animation-delay: 0.18s;
+    }
+
+    /* Оптимизация для мобильных - убираем задержки и ускоряем анимацию */
+    @media (max-width: 768px) {
+        .burger-open .mylink {
+            will-change: transform, opacity !important;
+        }
+        
+        .burger-open .mylink:nth-of-type(n) {
+            animation-delay: 0s !important;
+            animation-duration: 0.15s !important;
+        }
+    }
 }
 
 /* Анимация fade in снизу */
