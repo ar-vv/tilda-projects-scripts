@@ -442,8 +442,7 @@ body.burger-menu-open {
 
 /* Исправление для SVG внутри контейнеров Tilda */
 .tn-atom svg,
-.tn-element svg,
-div svg {
+.tn-element svg {
   display: block !important;
   margin: 0 !important;
   padding: 0 !important;
