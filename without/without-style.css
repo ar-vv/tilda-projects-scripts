@@ -425,14 +425,14 @@ body.burger-menu-open {
    ИСПРАВЛЕНИЕ ПРОБЛЕМ С SVG В МОБИЛЬНОМ SAFARI
    =========================================== */
 /* Исправляет проблему "съезжания" SVG элементов вниз в мобильном Safari */
-svg {
+.tn-elem svg {
   display: block !important;
   max-width: 100% !important;
   height: auto !important;
 }
 
 /* Дополнительные исправления для SVG с анимацией */
-svg[viewBox] {
+.tn-elem svg[viewBox] {
   position: relative !important;
   top: 0 !important;
   left: 0 !important;
@@ -459,7 +459,7 @@ div svg {
 }
 
 /* Дополнительные исправления для SVG с анимацией stroke-dashoffset */
-svg path[stroke-dasharray] {
+.tn-elem svg path[stroke-dasharray] {
   transform: translateZ(0) !important;
   -webkit-transform: translateZ(0) !important;
 }
@@ -467,7 +467,7 @@ svg path[stroke-dasharray] {
 /* Исправление для SVG внутри flex-контейнеров */
 .flex svg,
 .d-flex svg,
-[style*="display: flex"] svg {
+.tn-elem [style*="display: flex"] svg {
   flex-shrink: 0 !important;
   align-self: flex-start !important;
 }
