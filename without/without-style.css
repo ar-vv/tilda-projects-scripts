@@ -451,7 +451,7 @@ div svg {
 
 /* Специальные исправления для мобильного Safari */
 @supports (-webkit-touch-callout: none) {
-  svg {
+  .tn-elem svg {
     -webkit-transform: translateZ(0) !important;
     transform: translateZ(0) !important;
     will-change: auto !important;
