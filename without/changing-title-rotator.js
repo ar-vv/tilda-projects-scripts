@@ -2,10 +2,11 @@
   'use strict';
 
   function setupChangingTitle(root) {
-    if (!root) return;
+    if (!root || root.__changingTitleInitialized) return;
+    root.__changingTitleInitialized = true;
 
-    // Ожидаем структуру: .changing-title > div > p
-    var innerDiv = root.querySelector('div') || root;
+    // Ожидаем структуру: .changing-title > .tn-atom > p (или просто div > p)
+    var innerDiv = root.querySelector('.tn-atom') || root.querySelector('div') || root;
     var firstP = innerDiv.querySelector('p');
     if (!firstP) return;
 
@@ -43,14 +44,39 @@
 
   function initAll() {
     var blocks = document.querySelectorAll('.changing-title');
-    if (!blocks || !blocks.length) return;
-    blocks.forEach(function (b) { setupChangingTitle(b); });
+    if (blocks && blocks.length) {
+      blocks.forEach(function (b) { setupChangingTitle(b); });
+    }
   }
 
+  // Инициализация при готовности DOM
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAll);
   } else {
     initAll();
+  }
+
+  // Автоинициализация для динамически создаваемых узлов (Tilda отрисовывает позже)
+  try {
+    var observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var added = mutations[i].addedNodes;
+        for (var j = 0; j < added.length; j++) {
+          var node = added[j];
+          if (!(node instanceof Element)) continue;
+          if (node.matches && node.matches('.changing-title')) {
+            setupChangingTitle(node);
+          }
+          var found = node.querySelectorAll ? node.querySelectorAll('.changing-title') : [];
+          if (found && found.length) {
+            found.forEach(function (el) { setupChangingTitle(el); });
+          }
+        }
+      }
+    });
+    observer.observe(document.documentElement || document.body, { childList: true, subtree: true });
+  } catch (e) {
+    // no-op
   }
 })();
 
