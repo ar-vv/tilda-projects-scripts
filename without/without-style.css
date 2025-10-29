@@ -749,3 +749,34 @@ img {
 .t-form-success-popup .t-descr {
   font-family: "NeueMontreal" !important;
 }
+
+/* ===========================================
+   СМЕНА ТЕКСТА ВНУТРИ .changing-title (fade)
+   =========================================== */
+.changing-title {
+  position: relative;
+}
+
+.changing-title div {
+  position: relative;
+}
+
+.changing-title p {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.changing-title p.active {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .changing-title p {
+    transition: none !important;
+  }
+}
