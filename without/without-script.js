@@ -581,13 +581,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const allContainers = document.querySelectorAll('.burger');
         allContainers.forEach(container => closeMenu(container));
         
-        // Сбрасываем все состояния бургеров
+        // Сбрасываем состояния бургер-кнопок (без хранения)
         document.querySelectorAll('.burger-button').forEach(btn => {
             btn.classList.remove('active');
-            const container = btn.closest('.burger');
-            if (container && container.id) {
-                localStorage.setItem('burgerButtonState_' + container.id, 'inactive');
-            }
         });
     }
     
@@ -613,20 +609,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Вставляем кнопку в div внутри .burger
             innerDiv.appendChild(burgerButton);
             
-            // Сохраняем состояние в localStorage с уникальным ключом
-            const containerId = container.id || 'burger-' + Math.random().toString(36).substr(2, 9);
-            if (!container.id) {
-                container.id = containerId;
-            }
-            
-            const savedState = localStorage.getItem('burgerButtonState_' + containerId);
-            if (savedState === 'active') {
-                burgerButton.classList.add('active');
-                // Восстанавливаем класс burger-open при загрузке страницы
-                openMenu(container);
-            }
+            // Не сохраняем состояние, изначально меню закрыто
 
-            // Максимально оптимизированный обработчик для мгновенной реакции
+            // Обработчик клика для мгновенной реакции без хранения состояния
             burgerButton.addEventListener('click', function(e) {
                 // Предотвращаем стандартное поведение немедленно
                 e.preventDefault();
@@ -640,31 +625,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.classList.add('active');
                 }
                 
-                // Мгновенное обновление состояния меню БЕЗ localStorage (он блокирует поток)
+                // Мгновенное обновление состояния меню
                 if (!isActive) {
                     openMenu(container);
-                    // localStorage - асинхронно, не блокирует основной поток
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(() => {
-                            localStorage.setItem('burgerButtonState_' + containerId, 'active');
-                        }, { timeout: 1000 });
-                    } else {
-                        setTimeout(() => {
-                            localStorage.setItem('burgerButtonState_' + containerId, 'active');
-                        }, 0);
-                    }
                 } else {
                     closeMenu(container);
-                    // localStorage - асинхронно
-                    if (window.requestIdleCallback) {
-                        requestIdleCallback(() => {
-                            localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
-                        }, { timeout: 1000 });
-                    } else {
-                        setTimeout(() => {
-                            localStorage.setItem('burgerButtonState_' + containerId, 'inactive');
-                        }, 0);
-                    }
                 }
             }, { passive: false, capture: true });
         }
