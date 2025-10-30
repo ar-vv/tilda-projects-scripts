@@ -504,7 +504,7 @@ form button[type="submit"] {
   padding: 20px;
   box-sizing: border-box;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-  z-index: 10000;
+  z-index: 2147483647;
   display: none;
   animation: slideUp 0.3s ease-out;
 }
@@ -520,6 +520,11 @@ form button[type="submit"] {
 
 .cookie-consent-banner.show {
   display: block;
+}
+
+/* Скрытие баннера через класс */
+.cookie-consent-banner.hidden {
+  display: none !important;
 }
 
 .cookie-consent-wrapper {
@@ -721,10 +726,11 @@ img {
 @supports (-webkit-touch-callout: none) {
   /* Аппаратное ускорение для Safari */
   body {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-perspective: 1000;
-    perspective: 1000;
+    /* Не используем transform/perspective на body, чтобы не ломать position: fixed */
+    -webkit-transform: none !important;
+    transform: none !important;
+    -webkit-perspective: none !important;
+    perspective: none !important;
   }
   
   /* Оптимизация скролла для Safari */
