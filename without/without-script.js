@@ -783,6 +783,15 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
       banner.classList.add('show');
     }, 100);
+
+    // Жестко фиксируем к вьюпорту на мобильных (и в целом) — защищаемся от сторонних трансформов/перепотока
+    ensureBannerFixed();
+    // Повторно убеждаемся после короткой задержки и после событий, влияющих на вьюпорт
+    setTimeout(ensureBannerFixed, 400);
+    window.addEventListener('resize', ensureBannerFixed, { passive: true });
+    window.addEventListener('orientationchange', ensureBannerFixed, { passive: true });
+    window.addEventListener('load', ensureBannerFixed, { passive: true });
+    window.addEventListener('withoutLoaderHidden', ensureBannerFixed, { passive: true });
     
     // Обработчики кнопок
     const acceptBtn = document.getElementById('acceptCookies');
@@ -797,6 +806,32 @@ document.addEventListener('DOMContentLoaded', function() {
       saveConsent(false);
       hideBanner();
     });
+  }
+
+  // Гарантируем фикс-позиционирование и верхний уровень слоев для баннера
+  function ensureBannerFixed() {
+    try {
+      const banner = document.getElementById('cookieConsentBanner');
+      if (!banner) return;
+      // На всякий случай переносим в body
+      if (banner.parentElement !== document.body) {
+        document.body.appendChild(banner);
+      }
+      // Принудительные inline-стили с высокой специфичностью
+      banner.style.position = 'fixed';
+      banner.style.bottom = '0';
+      banner.style.left = '0';
+      banner.style.right = '0';
+      banner.style.width = '100%';
+      banner.style.maxHeight = '100vh';
+      banner.style.zIndex = '2147483647';
+      banner.style.transform = 'translateZ(0)';
+      banner.style.webkitTransform = 'translateZ(0)';
+      // Сбрасываем возможные вмешательства
+      banner.style.top = '';
+      banner.style.margin = '0';
+      banner.style.display = 'block';
+    } catch (e) {}
   }
 
   // Скрываем баннер
