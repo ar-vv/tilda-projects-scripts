@@ -473,8 +473,6 @@ body.burger-menu-open {
 }
 
 /* Исправление для SVG внутри flex-контейнеров */
-.flex svg,
-.d-flex svg,
 .tn-elem [style*="display: flex"] svg {
   flex-shrink: 0 !important;
   align-self: flex-start !important;
