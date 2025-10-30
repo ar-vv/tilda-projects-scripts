@@ -697,22 +697,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Оптимизированный обработчик клика по ссылкам в mylink
-    let clickTimeout;
+    // Обработчик клика по ссылкам в mylink (без задержек, мгновенная навигация)
     document.addEventListener('click', function(e) {
         const mylinkElement = e.target.closest('.mylink');
         if (mylinkElement) {
             const link = mylinkElement.querySelector('a');
             if (link && link.href && !link.href.includes('javascript:')) {
-                // Закрываем все меню немедленно для лучшей производительности
+                // Закрываем все меню немедленно
                 closeAllMenus();
                 
-                // Переходим по ссылке с минимальной задержкой
+                // Мгновенный переход без таймаутов
                 e.preventDefault();
-                clearTimeout(clickTimeout);
-                clickTimeout = setTimeout(() => {
-                    window.location.href = link.href;
-                }, 50);
+                window.location.href = link.href;
             }
         }
     }, { passive: false });

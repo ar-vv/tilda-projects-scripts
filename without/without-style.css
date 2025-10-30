@@ -97,7 +97,7 @@ body.burger-menu-open {
     height: 17%;
     background-color: #333;
     border-radius: 50px;
-    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s linear;
+    transition: none !important;
     transform-origin: center;
     will-change: transform, opacity;
     transform: translateZ(0);
@@ -130,19 +130,17 @@ body.burger-menu-open {
     visibility: hidden;
 }
 
-/* Показываем menu-back когда бургер открыт с анимацией прозрачности */
+/* Показываем menu-back когда бургер открыт (без анимации) */
 .burger-open .menu-back,
 .burger-open ~ .menu-back {
     display: table !important;
     opacity: 1;
     visibility: visible !important;
-    transition: opacity 0.1s ease-in;
+    transition: none !important;
 }
 
-/* Скрываем при закрытии бургера */
-.menu-back {
-    transition: opacity 0.1s ease-out;
-}
+/* Скрываем при закрытии бургера (без анимации) */
+.menu-back { transition: none !important; }
 
 /* ===========================================
    СТИЛИ ДЛЯ MYLINK
@@ -161,12 +159,12 @@ body.burger-menu-open {
         opacity: 0;
     }
     
-    /* Показываем mylink когда бургер открыт с анимацией fade in */
+    /* Показываем mylink когда бургер открыт (без анимации) */
     .burger-open .mylink,
     .burger-open ~ .mylink {
         display: block !important;
         visibility: visible !important;
-        animation: fadeInUp 0.15s ease-out forwards;
+        animation: none !important;
     }
     
     /* Оптимизированная анимация появления снизу */
@@ -226,30 +224,14 @@ body.burger-menu-open {
 
     /* Оптимизация для мобильных - убираем задержки и ускоряем анимацию */
     @media (max-width: 768px) {
-        .burger-open .mylink {
-            will-change: transform, opacity !important;
-        }
-        
-        .burger-open .mylink:nth-of-type(n) {
-            animation-delay: 0s !important;
-            animation-duration: 0.15s !important;
-        }
+    .burger-open .mylink {
+        will-change: auto !important;
+        animation: none !important;
+    }
     }
 }
 
-/* Анимация fade in снизу */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px) translateZ(0);
-        -webkit-transform: translateY(10px) translateZ(0);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) translateZ(0);
-        -webkit-transform: translateY(0) translateZ(0);
-    }
-}
+/* (удалено) */
 
 /* ===========================================
    СТИЛИ ДЛЯ ЛИНИЙ С АНИМАЦИЕЙ
