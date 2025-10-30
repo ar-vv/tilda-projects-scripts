@@ -43,8 +43,10 @@
 /* Оптимизация для мобильных устройств */
 @media (max-width: 768px) {
   .myblur {
-    animation-duration: 12s !important;
+    /* Отключаем анимацию и задаем статический сильный blur */
+    animation: none !important;
     will-change: auto !important;
+    filter: blur(150px) !important;
   }
   
   @media (prefers-reduced-motion: reduce) {
@@ -53,6 +55,8 @@
     }
   }
 }
+
+ 
 
 /* ===========================================
    СТИЛИ ДЛЯ BURGER МЕНЮ
