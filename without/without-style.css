@@ -729,10 +729,11 @@ img {
 @supports (-webkit-touch-callout: none) {
   /* Аппаратное ускорение для Safari */
   body {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-perspective: 1000;
-    perspective: 1000;
+    /* Убираем transform/perspective, чтобы не ломать position: fixed у оверлеев (iOS Safari баг) */
+    -webkit-transform: none !important;
+    transform: none !important;
+    -webkit-perspective: none !important;
+    perspective: none !important;
   }
   
   /* Оптимизация скролла для Safari */
