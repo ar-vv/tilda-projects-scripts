@@ -144,14 +144,14 @@ body.burger-menu-open {
    СТИЛИ ДЛЯ MYLINK
    =========================================== */
 /* На десктопе mylink всегда видим */
-@media (min-width: 1281px) {
+@media (min-width: 1280px) {
     .mylink {
         display: block !important;
     }
 }
 
 /* На мобильных устройствах mylink скрыт до открытия бургера */
-@media (max-width: 1280px) {
+@media (max-width: 1279px) {
     .mylink {
         display: none !important;
         opacity: 0;
@@ -502,6 +502,14 @@ form button[type="submit"] {
   -webkit-backdrop-filter: blur(10px);
   color: #333;
   padding: 20px;
+  /* Учитываем нижнюю безопасную зону iOS и фиксируем к вьюпорту */
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  /* В iOS Safari фиксированные элементы внутри трансформированных контейнеров "ломаются" —
+     явно отключаем любые трансформации у баннера */
+  -webkit-transform: none !important;
+  transform: none !important;
+  backface-visibility: hidden;
+  -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   z-index: 10000;
