@@ -502,14 +502,6 @@ form button[type="submit"] {
   -webkit-backdrop-filter: blur(10px);
   color: #333;
   padding: 20px;
-  /* Учитываем нижнюю безопасную зону iOS и фиксируем к вьюпорту */
-  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  /* В iOS Safari фиксированные элементы внутри трансформированных контейнеров "ломаются" —
-     явно отключаем любые трансформации у баннера */
-  -webkit-transform: none !important;
-  transform: none !important;
-  backface-visibility: hidden;
-  -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   z-index: 10000;
@@ -729,11 +721,10 @@ img {
 @supports (-webkit-touch-callout: none) {
   /* Аппаратное ускорение для Safari */
   body {
-    /* Убираем transform/perspective, чтобы не ломать position: fixed у оверлеев (iOS Safari баг) */
-    -webkit-transform: none !important;
-    transform: none !important;
-    -webkit-perspective: none !important;
-    perspective: none !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-perspective: 1000;
+    perspective: 1000;
   }
   
   /* Оптимизация скролла для Safari */
