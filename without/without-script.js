@@ -551,10 +551,10 @@ syncWidth(sliderWidth, slider);
     
     if (!isMobileSafari) return;
     
-    // Находим все SVG элементы
+    // Находим все SVG элементы, кроме тех что внутри попапа успеха Тильды
     const svgElements = document.querySelectorAll('svg');
-    
     svgElements.forEach(svg => {
+      if (svg.closest && svg.closest('.t-form-success-popup')) return;
       applySVGFix(svg);
     });
     
@@ -564,12 +564,17 @@ syncWidth(sliderWidth, slider);
         mutation.addedNodes.forEach(function(node) {
           if (node.nodeType === 1) { // Element node
             if (node.tagName === 'SVG') {
-              applySVGFix(node);
+              if (!(node.closest && node.closest('.t-form-success-popup'))) {
+                applySVGFix(node);
+              }
             }
             // Проверяем дочерние SVG элементы
             const childSvgs = node.querySelectorAll && node.querySelectorAll('svg');
             if (childSvgs) {
-              childSvgs.forEach(applySVGFix);
+              childSvgs.forEach(function(child){
+                if (child.closest && child.closest('.t-form-success-popup')) return;
+                applySVGFix(child);
+              });
             }
           }
         });
@@ -583,6 +588,8 @@ syncWidth(sliderWidth, slider);
   }
   
   function applySVGFix(svg) {
+    // Не трогаем SVG внутри попапа успеха Тильды
+    if (svg.closest && svg.closest('.t-form-success-popup')) return;
     // Принудительно устанавливаем стили для исправления позиционирования
     svg.style.display = 'block';
     svg.style.position = 'relative';
