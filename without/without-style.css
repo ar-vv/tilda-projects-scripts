@@ -152,24 +152,19 @@ body.burger-menu-open {
     }
 }
 
-/* На мобильных устройствах mylink скрыт до открытия бургера */
+/* На мобильных устройствах: скрываем по умолчанию, показываем когда body в режиме открытого меню */
 @media (max-width: 1279px) {
     .mylink {
         display: none !important;
         opacity: 0;
     }
     
-    /* Показываем mylink когда бургер открыт (без анимации) */
-    .burger-open .mylink,
-    .burger-open ~ .mylink {
+    /* Показываем пункты меню при открытом меню */
+    body.burger-menu-open .mylink {
         display: block !important;
         visibility: visible !important;
+        opacity: 1 !important;
         animation: none !important;
-    }
-    
-    /* Оптимизированная анимация появления снизу */
-    .burger-open .mylink {
-        will-change: transform, opacity;
     }
 
     .burger-open .mylink:nth-of-type(1),
