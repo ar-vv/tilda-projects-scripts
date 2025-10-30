@@ -325,6 +325,7 @@
 // ===========================================
 // Применяется к элементам с классами .my-glass и .slide
 // Создает оптимизированный стеклянный эффект с рефракцией
+'use strict';
 (function(){
 'use strict';
 var cfg={blur:8,saturate:180,contrast:110,grayThickness:5,grayIntensity:.5};
@@ -343,6 +344,12 @@ function createSVGFilter(){
 }
 
 function init(){
+// Отключаем стеклянный эффект на мобильных устройствах
+try {
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+    return; // не инициализируем эффект на мобилках
+  }
+} catch(_) {}
 var els=document.querySelectorAll('.my-glass,.slide');
 if(!els.length)return;
 createSVGFilter();
