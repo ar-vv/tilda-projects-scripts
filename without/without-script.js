@@ -485,7 +485,7 @@ window.addEventListener('load',function(){setTimeout(init,300)});
       items[prev].setAttribute('aria-hidden', 'true');
       items[index].classList.add('active');
       items[index].setAttribute('aria-hidden', 'false');
-    }, 1000);
+    }, 2000);
   }
 
   function run() {
