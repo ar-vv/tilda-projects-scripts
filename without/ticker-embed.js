@@ -145,16 +145,26 @@
     const addCopies = () => {
       const containerWidth = host.offsetWidth;
       
-      if (singleSetWidth <= 0) return;
+      if (singleSetWidth <= 0 || !isFinite(singleSetWidth) || singleSetWidth > 100000) {
+        return; // Защита от некорректных значений
+      }
+      
+      if (containerWidth <= 0 || !isFinite(containerWidth)) {
+        return; // Защита от некорректных значений контейнера
+      }
       
       // Вычисляем сколько копий нужно: контейнер + запас (минимум 2x контейнера)
       const neededWidth = Math.max(containerWidth * 2, containerWidth + singleSetWidth);
       const totalCopiesNeeded = Math.ceil(neededWidth / singleSetWidth);
       
+      // Ограничиваем максимальное количество копий (защита от бесконечного цикла)
+      const maxCopies = Math.ceil((containerWidth * 3) / singleSetWidth);
+      const limitedCopiesNeeded = Math.min(totalCopiesNeeded, maxCopies);
+      
       // Считаем сколько уже есть наборов
       const currentImageCount = track.querySelectorAll('img').length;
       const currentSetsCount = currentImageCount / urls.length;
-      const copiesToAdd = totalCopiesNeeded - currentSetsCount;
+      const copiesToAdd = limitedCopiesNeeded - currentSetsCount;
       
       if (copiesToAdd <= 0) return;
       
@@ -172,6 +182,30 @@
       }
     };
 
+    const calculateSingleSetWidth = () => {
+      // Вычисляем ширину одного набора на основе первого набора картинок
+      const firstSetImages = Array.from(track.querySelectorAll('img')).slice(0, urls.length);
+      if (firstSetImages.length === 0) return 0;
+      
+      let totalWidth = 0;
+      firstSetImages.forEach((img) => {
+        if (img.complete && img.naturalWidth > 0) {
+          // Вычисляем ширину с учетом высоты контейнера и пропорций изображения
+          const containerHeight = host.offsetHeight;
+          const aspectRatio = img.naturalWidth / img.naturalHeight;
+          const imageWidth = containerHeight * aspectRatio;
+          totalWidth += imageWidth;
+        } else {
+          // Если изображение еще не загружено, используем offsetWidth
+          totalWidth += img.offsetWidth || 0;
+        }
+      });
+      
+      // Добавляем промежутки между картинками
+      const gapsWidth = (firstSetImages.length - 1) * gap;
+      return totalWidth + gapsWidth;
+    };
+
     const updateMetrics = async () => {
       // Обновляем высоту контейнера, если она задана явно в параметрах
       if (height) {
@@ -183,11 +217,22 @@
       // Ждем один кадр для получения актуальных размеров
       await new Promise(resolve => requestAnimationFrame(resolve));
       
-      // Вычисляем ширину одного набора
-      const totalImageCount = track.querySelectorAll('img').length;
-      const setsCount = totalImageCount / urls.length;
-      if (setsCount > 0 && track.scrollWidth > 0) {
-        singleSetWidth = track.scrollWidth / setsCount;
+      // Вычисляем ширину одного набора более точно
+      const calculatedWidth = calculateSingleSetWidth();
+      if (calculatedWidth > 0 && isFinite(calculatedWidth) && calculatedWidth < 100000) {
+        singleSetWidth = calculatedWidth;
+      } else {
+        // Fallback: используем текущие размеры track
+        const totalImageCount = track.querySelectorAll('img').length;
+        const setsCount = totalImageCount / urls.length;
+        if (setsCount > 0 && track.scrollWidth > 0 && track.scrollWidth < 100000) {
+          singleSetWidth = track.scrollWidth / setsCount;
+        }
+      }
+      
+      // Проверяем корректность значения
+      if (singleSetWidth <= 0 || !isFinite(singleSetWidth) || singleSetWidth > 100000) {
+        return; // Пропускаем обновление, если значение некорректно
       }
       
       // Добавляем копии если нужно (на основе текущей ширины контейнера)
@@ -196,11 +241,14 @@
       // Ждем еще один кадр после добавления копий
       await new Promise(resolve => requestAnimationFrame(resolve));
       
-      // Пересчитываем после добавления копий
+      // Пересчитываем после добавления копий (проверяем, что значение разумное)
       const finalImageCount = track.querySelectorAll('img').length;
       const finalSetsCount = finalImageCount / urls.length;
-      if (finalSetsCount > 0 && track.scrollWidth > 0) {
-        singleSetWidth = track.scrollWidth / finalSetsCount;
+      if (finalSetsCount > 0 && track.scrollWidth > 0 && track.scrollWidth < 100000) {
+        const recalculated = track.scrollWidth / finalSetsCount;
+        if (recalculated > 0 && isFinite(recalculated) && recalculated < 100000) {
+          singleSetWidth = recalculated;
+        }
       }
       
       // Анимация сдвигается на ширину одного набора
