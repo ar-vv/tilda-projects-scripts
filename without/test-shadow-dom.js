@@ -7,7 +7,12 @@
 
   const initTest = (script) => {
     const host = script.parentElement;
-    if (!host) return;
+    if (!host) {
+      console.error('[test-shadow] Host element not found');
+      return;
+    }
+
+    console.log('[test-shadow] Initializing, host:', host);
 
     // Удаляем скрипт из DOM
     script.remove();
@@ -29,10 +34,13 @@
     // Очищаем host и добавляем красный div
     host.innerHTML = '';
     host.appendChild(box);
+    
+    console.log('[test-shadow] Red box added to host');
   };
 
   const mount = () => {
     const scripts = pickScripts();
+    console.log('[test-shadow] Found scripts:', scripts.length);
     scripts.forEach((script) => {
       script.setAttribute(PROCESSED_FLAG, 'true');
       initTest(script);
