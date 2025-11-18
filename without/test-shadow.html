@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Тест Shadow DOM</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    .test-container {
+      width: 800px;
+      height: 300px;
+      border: 2px solid #000;
+      margin: 20px 0;
+    }
+
+    .test-container-small {
+      width: 400px;
+      height: 200px;
+      border: 2px solid #000;
+      margin: 20px 0;
+    }
+
+    .test-container-large {
+      width: 1200px;
+      height: 500px;
+      border: 2px solid #000;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Тест Shadow DOM - Красный прямоугольник</h1>
+  
+  <p>Контейнер 800x300:</p>
+  <div class="test-container">
+    <script
+      src="./test-shadow-dom.js"
+      data-test-shadow
+    ></script>
+  </div>
+
+  <p>Контейнер 400x200:</p>
+  <div class="test-container-small">
+    <script
+      src="./test-shadow-dom.js"
+      data-test-shadow
+    ></script>
+  </div>
+
+  <p>Контейнер 1200x500:</p>
+  <div class="test-container-large">
+    <script
+      src="./test-shadow-dom.js"
+      data-test-shadow
+    ></script>
+  </div>
+
+  <p>Контейнер с фиксированной высотой через data-height (50px):</p>
+  <div style="width: 1240px; border: 2px solid #000;">
+    <script
+      src="./test-shadow-dom.js"
+      data-test-shadow
+      data-height="50"
+    ></script>
+  </div>
+</body>
+</html>
+
