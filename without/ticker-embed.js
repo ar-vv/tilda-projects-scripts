@@ -33,11 +33,16 @@
       img.addEventListener('error', resolve, { once: true });
     });
 
-  const buildStyle = () => {
-    const style = document.createElement('style');
-    style.textContent = `
+    const buildStyle = () => {
+      const style = document.createElement('style');
+      style.textContent = `
       :host {
-        all: initial;
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        box-sizing: border-box;
+        overflow: hidden;
       }
 
       *, *::before, *::after {
@@ -142,8 +147,18 @@
 
     let singleSetWidth = 0; // Ширина одного набора картинок
 
+    const getHostSize = () => {
+      // Используем getBoundingClientRect для более точного измерения размеров host
+      const rect = host.getBoundingClientRect();
+      return {
+        width: rect.width || host.offsetWidth || 0,
+        height: rect.height || host.offsetHeight || 0
+      };
+    };
+
     const addCopies = () => {
-      const containerWidth = host.offsetWidth;
+      const hostSize = getHostSize();
+      const containerWidth = hostSize.width;
       
       if (singleSetWidth <= 0 || !isFinite(singleSetWidth) || singleSetWidth > 100000) {
         return; // Защита от некорректных значений
@@ -187,7 +202,8 @@
       const firstSetImages = Array.from(track.querySelectorAll('img')).slice(0, urls.length);
       if (firstSetImages.length === 0) return 0;
       
-      const containerHeight = host.offsetHeight;
+      const hostSize = getHostSize();
+      const containerHeight = hostSize.height;
       if (containerHeight <= 0 || !isFinite(containerHeight)) return 0;
       
       let totalWidth = 0;
