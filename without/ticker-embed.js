@@ -187,23 +187,55 @@
       const firstSetImages = Array.from(track.querySelectorAll('img')).slice(0, urls.length);
       if (firstSetImages.length === 0) return 0;
       
+      const containerHeight = host.offsetHeight;
+      if (containerHeight <= 0 || !isFinite(containerHeight)) return 0;
+      
       let totalWidth = 0;
+      let allImagesLoaded = true;
+      
       firstSetImages.forEach((img) => {
-        if (img.complete && img.naturalWidth > 0) {
+        let imageWidth = 0;
+        
+        if (img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
           // Вычисляем ширину с учетом высоты контейнера и пропорций изображения
-          const containerHeight = host.offsetHeight;
           const aspectRatio = img.naturalWidth / img.naturalHeight;
-          const imageWidth = containerHeight * aspectRatio;
-          totalWidth += imageWidth;
+          imageWidth = containerHeight * aspectRatio;
+          
+          // Проверяем на разумность значения
+          if (!isFinite(imageWidth) || imageWidth <= 0 || imageWidth > 10000) {
+            allImagesLoaded = false;
+            // Используем offsetWidth как fallback
+            imageWidth = img.offsetWidth || 0;
+          }
         } else {
-          // Если изображение еще не загружено, используем offsetWidth
-          totalWidth += img.offsetWidth || 0;
+          allImagesLoaded = false;
+          // Если изображение еще не загружено, используем getBoundingClientRect для более точного измерения
+          const rect = img.getBoundingClientRect();
+          imageWidth = rect.width || img.offsetWidth || 0;
+          
+          // Если и это не помогло, пытаемся вычислить по пропорциям, если есть naturalWidth
+          if (imageWidth <= 0 && img.naturalWidth > 0 && img.naturalHeight > 0) {
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+            imageWidth = containerHeight * aspectRatio;
+          }
+        }
+        
+        // Проверяем на разумность перед добавлением
+        if (isFinite(imageWidth) && imageWidth > 0 && imageWidth <= 10000) {
+          totalWidth += imageWidth;
         }
       });
       
       // Добавляем промежутки между картинками
       const gapsWidth = (firstSetImages.length - 1) * gap;
-      return totalWidth + gapsWidth;
+      const result = totalWidth + gapsWidth;
+      
+      // Финальная проверка на разумность
+      if (!isFinite(result) || result <= 0 || result > 100000) {
+        return 0;
+      }
+      
+      return result;
     };
 
     const updateMetrics = async () => {
@@ -217,17 +249,13 @@
       // Ждем один кадр для получения актуальных размеров
       await new Promise(resolve => requestAnimationFrame(resolve));
       
-      // Вычисляем ширину одного набора более точно
+      // Вычисляем ширину одного набора - используем только прямое измерение
       const calculatedWidth = calculateSingleSetWidth();
       if (calculatedWidth > 0 && isFinite(calculatedWidth) && calculatedWidth < 100000) {
         singleSetWidth = calculatedWidth;
       } else {
-        // Fallback: используем текущие размеры track
-        const totalImageCount = track.querySelectorAll('img').length;
-        const setsCount = totalImageCount / urls.length;
-        if (setsCount > 0 && track.scrollWidth > 0 && track.scrollWidth < 100000) {
-          singleSetWidth = track.scrollWidth / setsCount;
-        }
+        // Если не удалось вычислить, пропускаем обновление
+        return;
       }
       
       // Проверяем корректность значения
@@ -241,15 +269,9 @@
       // Ждем еще один кадр после добавления копий
       await new Promise(resolve => requestAnimationFrame(resolve));
       
-      // Пересчитываем после добавления копий (проверяем, что значение разумное)
-      const finalImageCount = track.querySelectorAll('img').length;
-      const finalSetsCount = finalImageCount / urls.length;
-      if (finalSetsCount > 0 && track.scrollWidth > 0 && track.scrollWidth < 100000) {
-        const recalculated = track.scrollWidth / finalSetsCount;
-        if (recalculated > 0 && isFinite(recalculated) && recalculated < 100000) {
-          singleSetWidth = recalculated;
-        }
-      }
+      // НЕ используем track.scrollWidth - он может давать некорректные значения
+      // Вместо этого просто используем уже вычисленную ширину одного набора
+      // Она не должна меняться после добавления копий, так как копии идентичны оригиналу
       
       // Анимация сдвигается на ширину одного набора
       track.style.setProperty('--ticker-shift', `-${singleSetWidth}px`);
@@ -274,15 +296,13 @@
       await updateMetrics();
     }
     
-    // Финальная проверка стабильности размеров
+    // Финальная проверка - просто делаем еще одно обновление для стабильности
     await new Promise(resolve => requestAnimationFrame(resolve));
-    const checkWidth = track.scrollWidth;
     await updateMetrics();
     
-    if (Math.abs(track.scrollWidth - checkWidth) > 1) {
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      await updateMetrics();
-    }
+    // Еще одно обновление для гарантии, что все размеры стабилизировались
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    await updateMetrics();
     
     // Только теперь включаем анимацию
     track.setAttribute('data-ready', 'true');
