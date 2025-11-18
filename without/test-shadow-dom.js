@@ -16,29 +16,64 @@
     // Удаляем скрипт из DOM
     script.remove();
 
+    // Функция для поиска родителя с классом tn-elem
+    const findTnElem = (element) => {
+      let current = element;
+      let level = 0;
+      while (current && level < 3) {
+        if (current.classList && current.classList.contains('tn-elem')) {
+          return current;
+        }
+        current = current.parentElement;
+        level++;
+      }
+      return null;
+    };
+
+    // Функция для получения размера из стиля (например, "1240px" -> 1240)
+    const parseSizeFromStyle = (styleValue) => {
+      if (!styleValue) return 0;
+      const match = styleValue.match(/(\d+(?:\.\d+)?)/);
+      return match ? parseFloat(match[1]) : 0;
+    };
+
     // Функция для автоматического определения размеров контейнера
     const detectContainerSize = () => {
-      // Сначала пытаемся получить размеры из getBoundingClientRect
-      const rect = host.getBoundingClientRect();
-      let width = rect.width;
-      let height = rect.height;
+      // Ищем родителя с классом tn-elem
+      const tnElem = findTnElem(host);
+      
+      if (tnElem) {
+        // Пытаемся получить размеры из атрибутов data-field
+        let width = Number(tnElem.getAttribute('data-field-width-value')) || 0;
+        let height = Number(tnElem.getAttribute('data-field-height-value')) || 0;
 
-      // Если размеры не получены, пробуем другие методы
-      if (width <= 0 || !isFinite(width)) {
-        width = host.offsetWidth || 
-                host.clientWidth || 
-                parseInt(getComputedStyle(host).width) || 
-                0;
+        // Если атрибуты не найдены, пытаемся получить из inline стилей
+        if (width <= 0 && tnElem.style.width) {
+          width = parseSizeFromStyle(tnElem.style.width);
+        }
+
+        if (height <= 0 && tnElem.style.height) {
+          height = parseSizeFromStyle(tnElem.style.height);
+        }
+
+        // Если все еще не найдено, пытаемся получить из getComputedStyle
+        if (width <= 0) {
+          const computedWidth = getComputedStyle(tnElem).width;
+          width = parseSizeFromStyle(computedWidth);
+        }
+
+        if (height <= 0) {
+          const computedHeight = getComputedStyle(tnElem).height;
+          height = parseSizeFromStyle(computedHeight);
+        }
+
+        if (width > 0 && height > 0) {
+          return { width, height };
+        }
       }
 
-      if (height <= 0 || !isFinite(height)) {
-        height = host.offsetHeight || 
-                 host.clientHeight || 
-                 parseInt(getComputedStyle(host).height) || 
-                 0;
-      }
-
-      return { width, height };
+      // Fallback: если tn-elem не найден, возвращаем 0
+      return { width: 0, height: 0 };
     };
 
     // Автоматически определяем размеры контейнера
@@ -92,22 +127,54 @@
     shadowRoot.innerHTML = '';
     shadowRoot.append(style, box);
 
-    // Функция для получения текущих размеров родителя
+    // Функция для получения текущих размеров из tn-elem
     const getHostSize = () => {
-      const rect = host.getBoundingClientRect();
-      return {
-        width: rect.width || host.offsetWidth || 0,
-        height: rect.height || host.offsetHeight || 0
-      };
+      const tnElem = findTnElem(host);
+      if (!tnElem) {
+        return { width: 0, height: 0 };
+      }
+
+      // Получаем размеры из атрибутов или стилей tn-elem
+      let width = Number(tnElem.getAttribute('data-field-width-value')) || 0;
+      let height = Number(tnElem.getAttribute('data-field-height-value')) || 0;
+
+      // Если атрибуты не найдены, пытаемся получить из inline стилей
+      if (width <= 0 && tnElem.style.width) {
+        width = parseSizeFromStyle(tnElem.style.width);
+      }
+
+      if (height <= 0 && tnElem.style.height) {
+        height = parseSizeFromStyle(tnElem.style.height);
+      }
+
+      // Если все еще не найдено, пытаемся получить из getComputedStyle
+      if (width <= 0) {
+        const computedWidth = getComputedStyle(tnElem).width;
+        width = parseSizeFromStyle(computedWidth);
+      }
+
+      if (height <= 0) {
+        const computedHeight = getComputedStyle(tnElem).height;
+        height = parseSizeFromStyle(computedHeight);
+      }
+
+      return { width, height };
     };
 
     // Обновляем размеры при изменении размера контейнера
     const updateSize = () => {
       const hostSize = getHostSize();
-      console.log('Размеры родителя (автоматически определены):', hostSize);
+      console.log('Размеры из tn-elem:', hostSize);
       
-      // CSS уже должен автоматически заполнять контейнер через width: 100% и height: 100%
-      // Но для отладки можем вывести информацию
+      // Обновляем размеры host, если они изменились
+      if (hostSize.width > 0 && hostSize.height > 0) {
+        if (!explicitWidth) {
+          host.style.width = `${hostSize.width}px`;
+        }
+        if (!explicitHeight) {
+          host.style.height = `${hostSize.height}px`;
+        }
+      }
     };
 
     // Ждем один кадр для получения актуальных размеров
@@ -120,6 +187,21 @@
       updateSize();
     });
     resizeObserver.observe(host);
+    
+    // Также отслеживаем изменения в tn-elem, если он найден
+    const tnElem = findTnElem(host);
+    if (tnElem) {
+      resizeObserver.observe(tnElem);
+      
+      // Отслеживаем изменения атрибутов tn-elem через MutationObserver
+      const mutationObserver = new MutationObserver(() => {
+        updateSize();
+      });
+      mutationObserver.observe(tnElem, {
+        attributes: true,
+        attributeFilter: ['data-field-width-value', 'data-field-height-value', 'style']
+      });
+    }
   };
 
   const mount = () => {
