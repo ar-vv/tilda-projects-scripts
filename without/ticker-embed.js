@@ -49,6 +49,7 @@
         height: 100%;
         overflow: hidden;
         position: relative;
+        box-sizing: border-box;
       }
 
       .ticker-track {
@@ -57,6 +58,7 @@
         height: 100%;
         gap: var(--ticker-gap, ${DEFAULT_GAP}px);
         will-change: transform;
+        position: relative;
       }
 
       .ticker-track[data-ready="true"] {
