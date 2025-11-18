@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Тикер в Shadow DOM</title>
+  <style>
+    .ticker-host {
+      width: 800px;
+      height: 20px;
+      border: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="ticker-host">
+    <script
+      src="./ticker-embed.js"
+      data-ticker-embed
+      data-gap="24"
+      data-speed="80"
+      data-images='[
+        "https://optim.tildacdn.com/stor6131-3563-4362-b134-633839396631/-/contain/524x700/center/center/-/format/webp/1918b3c64b847d0a515cee887e4229ac.webp",
+        "https://optim.tildacdn.com/stor3733-6135-4335-b163-623661636264/-/contain/524x700/center/center/-/format/webp/a79bb3245677ab8b738f3440e758b05a.webp"
+      ]'
+    ></script>
+  </div>
+</body>
+</html>
