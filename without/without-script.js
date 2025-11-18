@@ -264,7 +264,6 @@
     run();
   }
 })();
-
 // ===========================================
 // ОБРАБОТЧИК КНОПКИ-ССЫЛКИ "#Submit" (ОТКЛЮЧЕНО)
 // ===========================================
@@ -503,12 +502,10 @@ window.addEventListener('load',function(){setTimeout(init,300)});
 
 
 // ===========================================
-// СИНХРОНИЗАЦИЯ ШИРИНЫ ТИКЕРА И СЛАЙДЕРА
+// СИНХРОНИЗАЦИЯ ШИРИНЫ СЛАЙДЕРА
 // ===========================================
-// Синхронизирует ширину .ticker с .ticker-width и .slider с .slider-width
+// Синхронизирует ширину .slider с .slider-width
 document.addEventListener("DOMContentLoaded", function() {
-  const tickerWidth = document.querySelector(".ticker-width");
-  const ticker = document.querySelector(".ticker");
   const sliderWidth = document.querySelector(".slider-width");
   const slider = document.querySelector(".slider");
 
@@ -529,8 +526,7 @@ document.addEventListener("DOMContentLoaded", function() {
     target.style.width = source.offsetWidth + "px";
   }
 
-syncWidth(tickerWidth, ticker);
-syncWidth(sliderWidth, slider);
+  syncWidth(sliderWidth, slider);
 });
 
 // ===========================================
