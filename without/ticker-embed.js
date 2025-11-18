@@ -87,15 +87,16 @@
     return style;
   };
 
-  const setHostDefaults = (host, fallbackHeight) => {
-    if (!host.style.position) host.style.position = 'relative';
-    if (!host.style.display) host.style.display = 'block';
-    if (!host.style.overflow) host.style.overflow = 'hidden';
-    const hasHeight = host.style.height || host.offsetHeight;
-    if (!hasHeight && fallbackHeight) {
-      host.style.height = `${fallbackHeight}px`;
-    }
-  };
+    const setHostDefaults = (host, explicitHeight) => {
+      if (!host.style.position) host.style.position = 'relative';
+      if (!host.style.display) host.style.display = 'block';
+      if (!host.style.overflow) host.style.overflow = 'hidden';
+      // Если высота явно указана в параметрах, устанавливаем её
+      if (explicitHeight) {
+        host.style.height = `${explicitHeight}px`;
+      }
+    };
+
 
   const initTicker = async (script) => {
     const host = script.parentElement;
@@ -104,12 +105,12 @@
     const gap = Number(script.getAttribute('data-gap')) || DEFAULT_GAP;
     const speed = Number(script.getAttribute('data-speed')) || DEFAULT_SPEED;
     const pauseOnHover = script.getAttribute('data-pause-on-hover') === 'true';
-    const fallbackHeight = Number(script.getAttribute('data-height')) || null;
+    const height = Number(script.getAttribute('data-height')) || null;
     const urls = parseImages(script.getAttribute('data-images'));
 
     if (!urls.length) return;
 
-    setHostDefaults(host, fallbackHeight);
+    setHostDefaults(host, height);
 
     const shadowRoot = host.shadowRoot || host.attachShadow({ mode: 'open' });
     shadowRoot.innerHTML = '';
@@ -169,8 +170,16 @@
       }
     };
 
-    const updateMetrics = () => {
+    const updateMetrics = async () => {
+      // Обновляем высоту контейнера, если она задана явно в параметрах
+      if (height) {
+        host.style.height = `${height}px`;
+      }
+      
       track.style.setProperty('--ticker-gap', `${gap}px`);
+      
+      // Ждем один кадр для получения актуальных размеров
+      await new Promise(resolve => requestAnimationFrame(resolve));
       
       // Вычисляем ширину одного набора
       const totalImageCount = track.querySelectorAll('img').length;
@@ -179,8 +188,11 @@
         singleSetWidth = track.scrollWidth / setsCount;
       }
       
-      // Добавляем копии если нужно
+      // Добавляем копии если нужно (на основе текущей ширины контейнера)
       addCopies();
+      
+      // Ждем еще один кадр после добавления копий
+      await new Promise(resolve => requestAnimationFrame(resolve));
       
       // Пересчитываем после добавления копий
       const finalImageCount = track.querySelectorAll('img').length;
@@ -202,31 +214,40 @@
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     
     // Первоначальный расчет метрик и добавление копий
-    updateMetrics();
+    await updateMetrics();
     
     // Ждем загрузки всех добавленных изображений (если они были добавлены)
     const allImages = Array.from(track.querySelectorAll('img'));
     if (allImages.length > urls.length) {
       await Promise.all(allImages.map(preload));
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      updateMetrics();
+      await updateMetrics();
     }
     
     // Финальная проверка стабильности размеров
     await new Promise(resolve => requestAnimationFrame(resolve));
     const checkWidth = track.scrollWidth;
-    updateMetrics();
+    await updateMetrics();
     
     if (Math.abs(track.scrollWidth - checkWidth) > 1) {
       await new Promise(resolve => requestAnimationFrame(resolve));
-      updateMetrics();
+      await updateMetrics();
     }
     
     // Только теперь включаем анимацию
     track.setAttribute('data-ready', 'true');
 
+    // Debounce для ResizeObserver, чтобы не вызывать updateMetrics слишком часто
+    let resizeTimeout = null;
     const resizeObserver = new ResizeObserver(() => {
-      updateMetrics();
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+      }
+      resizeTimeout = setTimeout(() => {
+        updateMetrics().catch((error) => {
+          console.error('[ticker-embed] Ошибка при обновлении метрик:', error);
+        });
+      }, 100); // Задержка 100мс для группировки быстрых изменений
     });
     resizeObserver.observe(host);
   };
